@@ -9,8 +9,10 @@ import bgu.spl.a2.Deferred;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
-import java.util.concurrent.ArrayBlockingQueue;
+
+
+
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * A class representing the warehouse in your simulation
@@ -22,9 +24,9 @@ import java.util.concurrent.ArrayBlockingQueue;
  *
  */
 public class Warehouse {
-	private ArrayBlockingQueue<GcdScrewDriver> screwDrivers;
-	private ArrayBlockingQueue<NextPrimeHammer> hammers;
-	private ArrayBlockingQueue<RandomSumPliers> pliers;
+	private LinkedBlockingQueue<Tool> screwDrivers;
+	private LinkedBlockingQueue<Tool> hammers;
+	private LinkedBlockingQueue<Tool> pliers;
 	private Map<String,ManufactoringPlan> productPlansMap;
 
 	/**
@@ -32,9 +34,9 @@ public class Warehouse {
 	*/
     public Warehouse(){
 		// TODO: 26/12/2016 maybe use concurrent deque or something...
-		screwDrivers = new ArrayBlockingQueue<GcdScrewDriver>(1024);
-		hammers = new ArrayBlockingQueue<NextPrimeHammer>(1024);
-		pliers = new ArrayBlockingQueue<RandomSumPliers>(1024);
+		screwDrivers = new LinkedBlockingQueue<>();
+		hammers = new LinkedBlockingQueue<>();
+		pliers = new LinkedBlockingQueue<>();
 		productPlansMap = new HashMap<>();
 	}
 
@@ -46,13 +48,15 @@ public class Warehouse {
 	*/
     public Deferred<Tool> acquireTool(String type){
 	// TODO: 26/12/2016 think on some smarter way to do this
-		switch (type) {
+        // TODO: 26/12/2016 handle catch
+        // TODO: 26/12/2016 try without sync
+        switch (type) {
 			case "GcdScrewDriver":
 				synchronized (this) {
 					try{
-					    Deferred<Tool> screwDrierDeferred = new Deferred<>();
-					    screwDrierDeferred.resolve(screwDrivers.take());
-					    return screwDrierDeferred;
+					    Deferred<Tool> deferredScrewDriver = new Deferred<>();
+                        deferredScrewDriver.resolve(screwDrivers.take());
+					    return deferredScrewDriver;
                     }
                     catch (InterruptedException e){
 					    e.printStackTrace();
@@ -61,22 +65,50 @@ public class Warehouse {
 				}
 			case "NextPrimeHammer":
 				synchronized (this) {
-
+                    try{
+                        Deferred<Tool> deferredHammer = new Deferred<>();
+                        deferredHammer.resolve(screwDrivers.take());
+                        return deferredHammer;
+                    }
+                    catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
 					break;
 				}
 			case "RandomSumPliers":
 				synchronized (this){
+                    try{
+                        Deferred<Tool> deferredPliers = new Deferred<>();
+                        deferredPliers.resolve(screwDrivers.take());
+                        return deferredPliers;
+                    }
+                    catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
 					break;
 				}
-
-		}
+        }
+        return new Deferred<>();
+        //todo handle this ^
 	}
 	/**
 	* Tool return procedure - releases a tool which becomes available in the warehouse upon completion.
 	* @param tool - The tool to be returned
 	*/
-    public void releaseTool(Tool tool);
-
+    public void releaseTool(Tool tool){
+        // TODO: 26/12/2016 maybe sync?
+       switch (tool.getType()) {
+           case "GcdScrewDriver":
+               screwDrivers.add(tool);
+               break;
+           case "NextPrimeHammer":
+               hammers.add(tool);
+               break;
+           case "RandomSumPliers":
+               pliers.add(tool);
+               break;
+       }
+    }
 	
 	/**
 	* Getter for ManufactoringPlans

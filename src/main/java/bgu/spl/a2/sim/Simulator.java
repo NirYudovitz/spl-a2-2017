@@ -12,6 +12,7 @@ import bgu.spl.a2.WorkStealingThreadPool;
  * A class describing the simulator for part 2 of the assignment
  */
 public class Simulator {
+	static WorkStealingThreadPool threadPool;
 	/**
 	* Begin the simulation
 	* Should not be called before attachWorkStealingThreadPool()
@@ -22,7 +23,11 @@ public class Simulator {
 	* attach a WorkStealingThreadPool to the Simulator, this WorkStealingThreadPool will be used to run the simulation
 	* @param myWorkStealingThreadPool - the WorkStealingThreadPool which will be used by the simulator
 	*/
-	public static void attachWorkStealingThreadPool(WorkStealingThreadPool myWorkStealingThreadPool);
+	public static void attachWorkStealingThreadPool(WorkStealingThreadPool myWorkStealingThreadPool){
+		threadPool = myWorkStealingThreadPool;
+	}
 	
-	public static int main(String [] args);
+	public static int main(String [] args){
+
+	}
 }
