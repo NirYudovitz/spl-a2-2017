@@ -8,10 +8,10 @@ import java.util.concurrent.atomic.AtomicLong;
  * A class that represents a product produced during the simulation
  */
 public class Product {
-	long startId;
-	AtomicLong currentId;
-	String name;
-	List<Product> partList;
+	private final long startId;
+	private AtomicLong currentId;
+	private String name;
+	private List<Product> partList;
 	/**
 	* Constructor 
 	* @param startId - Product start id

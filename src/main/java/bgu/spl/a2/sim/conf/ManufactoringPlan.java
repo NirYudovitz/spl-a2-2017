@@ -7,7 +7,7 @@ import bgu.spl.a2.sim.Product;
  *
  **/
 public class ManufactoringPlan {
-	private String product;
+	final private String product;
 	private String parts [];
 	private String tools [];
 	/** ManufactoringPlan constructor

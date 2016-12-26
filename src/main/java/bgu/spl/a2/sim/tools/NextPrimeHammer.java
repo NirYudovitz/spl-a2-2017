@@ -8,12 +8,18 @@ import java.math.BigInteger;
  * Created by Nir1612 on 26/12/2016.
  */
 public class NextPrimeHammer implements Tool {
+    private String type;
+
+    public NextPrimeHammer() {
+        type = "NextPrimeHammer";
+    }
+
     /**
      * @return tool name as string
      */
     @Override
     public String getType() {
-        return "NextPrimeHammer";
+        return type;
     }
 
     /**

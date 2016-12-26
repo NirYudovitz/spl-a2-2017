@@ -8,12 +8,18 @@ import java.util.Random;
  * Created by Nir1612 on 26/12/2016.
  */
 public class RandomSumPliers implements Tool {
+    private String type;
+
+    public RandomSumPliers() {
+        type = "RandomSumPliers";
+    }
+
     /**
      * @return tool name as string
      */
     @Override
     public String getType() {
-        return "RandomSumPliers";
+        return type;
     }
 
     /**

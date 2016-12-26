@@ -8,12 +8,18 @@ import java.math.BigInteger;
  * Created by Nir1612 on 26/12/2016.
  */
 public class GcdScrewDriver implements Tool {
+
+    public GcdScrewDriver() {
+        type = "GcdScrewDriver";
+    }
+
+    private String type;
     /**
      * @return tool name as string
      */
     @Override
     public String getType() {
-        return "GcdScrewDriver";
+        return type;
     }
 
     /**
