@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * A class that represents a product produced during the simulation.
+ * A class that represents a product produced during the simulation
  */
 public class Product {
 	long startId;
