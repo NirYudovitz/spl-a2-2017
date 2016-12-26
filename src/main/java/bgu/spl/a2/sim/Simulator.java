@@ -6,7 +6,7 @@
 package bgu.spl.a2.sim;
 
 import bgu.spl.a2.WorkStealingThreadPool;
-
+import com.google.gson.Gson;
 
 /**
  * A class describing the simulator for part 2 of the assignment
@@ -28,6 +28,6 @@ public class Simulator {
 	}
 	
 	public static int main(String [] args){
-
+		Gson gson = new Gson();
 	}
 }
