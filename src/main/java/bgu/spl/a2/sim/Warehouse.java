@@ -1,8 +1,13 @@
 package bgu.spl.a2.sim;
 
+import bgu.spl.a2.sim.tools.GcdScrewDriver;
+import bgu.spl.a2.sim.tools.NextPrimeHammer;
+import bgu.spl.a2.sim.tools.RandomSumPliers;
 import bgu.spl.a2.sim.tools.Tool;
 import bgu.spl.a2.sim.conf.ManufactoringPlan;
 import bgu.spl.a2.Deferred;
+
+import java.util.Vector;
 
 /**
  * A class representing the warehouse in your simulation
@@ -10,15 +15,22 @@ import bgu.spl.a2.Deferred;
  * Note for implementors: you may add methods and synchronize any of the
  * existing methods in this class *BUT* you must be able to explain why the
  * synchronization is needed. In addition, the methods you add to this class can
- * only be private!!!
+ * only be private!!
  *
  */
 public class Warehouse {
+	private Vector<GcdScrewDriver> screwDriversVector;
+	private Vector<NextPrimeHammer> hammersVector;
+	private Vector<RandomSumPliers> pliersVector;
 
 	/**
 	* Constructor
 	*/
-    public Warehouse();
+    public Warehouse(){
+    	screwDriversVector = new Vector<>();
+		hammersVector = new Vector<>();
+		pliersVector = new Vector<>();
+	}
 
 	/**
 	* Tool acquisition procedure
