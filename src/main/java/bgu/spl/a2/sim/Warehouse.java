@@ -10,6 +10,7 @@ import bgu.spl.a2.Deferred;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * A class representing the warehouse in your simulation
@@ -21,18 +22,19 @@ import java.util.Vector;
  *
  */
 public class Warehouse {
-	private Vector<GcdScrewDriver> screwDriversVector;
-	private Vector<NextPrimeHammer> hammersVector;
-	private Vector<RandomSumPliers> pliersVector;
+	private ArrayBlockingQueue<GcdScrewDriver> screwDrivers;
+	private ArrayBlockingQueue<NextPrimeHammer> hammers;
+	private ArrayBlockingQueue<RandomSumPliers> pliers;
 	private Map<String,ManufactoringPlan> productPlansMap;
 
 	/**
 	* Constructor
 	*/
     public Warehouse(){
-    	screwDriversVector = new Vector<>();
-		hammersVector = new Vector<>();
-		pliersVector = new Vector<>();
+		// TODO: 26/12/2016 maybe use concurrent deque or something...
+		screwDrivers = new ArrayBlockingQueue<GcdScrewDriver>(1024);
+		hammers = new ArrayBlockingQueue<NextPrimeHammer>(1024);
+		pliers = new ArrayBlockingQueue<RandomSumPliers>(1024);
 		productPlansMap = new HashMap<>();
 	}
 
@@ -42,8 +44,33 @@ public class Warehouse {
 	* @param type - string describing the required tool
 	* @return a deferred promise for the  requested tool
 	*/
-    public Deferred<Tool> acquireTool(String type);
+    public Deferred<Tool> acquireTool(String type){
+	// TODO: 26/12/2016 think on some smarter way to do this
+		switch (type) {
+			case "GcdScrewDriver":
+				synchronized (this) {
+					try{
+					    Deferred<Tool> screwDrierDeferred = new Deferred<>();
+					    screwDrierDeferred.resolve(screwDrivers.take());
+					    return screwDrierDeferred;
+                    }
+                    catch (InterruptedException e){
+					    e.printStackTrace();
+                    }
+					break;
+				}
+			case "NextPrimeHammer":
+				synchronized (this) {
 
+					break;
+				}
+			case "RandomSumPliers":
+				synchronized (this){
+					break;
+				}
+
+		}
+	}
 	/**
 	* Tool return procedure - releases a tool which becomes available in the warehouse upon completion.
 	* @param tool - The tool to be returned
@@ -79,18 +106,18 @@ public class Warehouse {
 		switch (tool.getType()){
 			case "GcdScrewDriver":
 				for (int i=0; i<qty; i++) {
-					screwDriversVector.add(new GcdScrewDriver());
+					screwDrivers.add(new GcdScrewDriver());
 				}
 					//addToolsToVector(screwDriversVector, new GcdScrewDriver(), qty);
 				break;
 			case "NextPrimeHammer":
 				for (int i=0; i<qty; i++) {
-					hammersVector.add(new NextPrimeHammer());
+					hammers.add(new NextPrimeHammer());
 				}// add to vector
 				break;
 			case "RandomSumPliers":
 				for (int i=0; i<qty; i++) {
-					pliersVector.add(new RandomSumPliers());
+					pliers.add(new RandomSumPliers());
 				}
 				// add to vector
 				break;
