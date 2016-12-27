@@ -44,7 +44,7 @@ public class Processor implements Runnable {
 
     @Override
     public void run() {
-        // TODO: 19.12.2016 if not steal from all todo wait by monitor
+        //todo handle while
         while (!Thread.currentThread().isInterrupted()) {
             if (pool.haveTasks(id)) {
                 Task t = pool.getNextTask(id);

@@ -8,26 +8,31 @@ package bgu.spl.a2.sim;
 import bgu.spl.a2.WorkStealingThreadPool;
 import com.google.gson.Gson;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 /**
  * A class describing the simulator for part 2 of the assignment
  */
 public class Simulator {
-	static WorkStealingThreadPool threadPool;
-	/**
-	* Begin the simulation
-	* Should not be called before attachWorkStealingThreadPool()
-	*/
-    public static ConcurrentLinkedQueue<Product> start();
-	
-	/**
-	* attach a WorkStealingThreadPool to the Simulator, this WorkStealingThreadPool will be used to run the simulation
-	* @param myWorkStealingThreadPool - the WorkStealingThreadPool which will be used by the simulator
-	*/
-	public static void attachWorkStealingThreadPool(WorkStealingThreadPool myWorkStealingThreadPool){
-		threadPool = myWorkStealingThreadPool;
-	}
-	
-	public static int main(String [] args){
-		Gson gson = new Gson();
-	}
+    static WorkStealingThreadPool threadPool;
+
+    /**
+     * Begin the simulation
+     * Should not be called before attachWorkStealingThreadPool()
+     */
+    public static ConcurrentLinkedQueue<Product> start() {
+    }
+
+    /**
+     * attach a WorkStealingThreadPool to the Simulator, this WorkStealingThreadPool will be used to run the simulation
+     *
+     * @param myWorkStealingThreadPool - the WorkStealingThreadPool which will be used by the simulator
+     */
+    public static void attachWorkStealingThreadPool(WorkStealingThreadPool myWorkStealingThreadPool) {
+        threadPool = myWorkStealingThreadPool;
+    }
+
+    public static int main(String[] args) {
+        Gson gson = new Gson();
+    }
 }

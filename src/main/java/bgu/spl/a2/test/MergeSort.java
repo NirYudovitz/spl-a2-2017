@@ -24,7 +24,7 @@ public class MergeSort extends Task<int[]> {
 
     public static void main(String[] args) throws InterruptedException {
         WorkStealingThreadPool pool = new WorkStealingThreadPool(4);
-        int n = 100000; //you may check on different number of elements if you like
+        int n = 100; //you may check on different number of elements if you like
         int[] array = new Random().ints(n).toArray();
 
         MergeSort task = new MergeSort(array);
@@ -34,7 +34,7 @@ public class MergeSort extends Task<int[]> {
         pool.submit(task);
         task.getResult().whenResolved(() -> {
             //warning - a large print!! - you can remove this line if you wish
-//            System.out.println(Arrays.toString(task.getResult().get()));
+            System.out.println(Arrays.toString(task.getResult().get()));
             System.out.println("Is sorted: " + IsSorted(task.getResult().get()));
             l.countDown();
         });
