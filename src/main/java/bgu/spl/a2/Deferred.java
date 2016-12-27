@@ -17,7 +17,7 @@ import java.util.*;
 public class Deferred<T> {
     private T result;
     private boolean isResolved;
-    private List<Runnable> callBacks;
+    private List<Runnable> callBacks;זגהכגד
 
     public Deferred() {
         isResolved = false;
