@@ -16,7 +16,7 @@ import java.util.*;
  */
 public class Deferred<T> {
     private T result;
-    private boolean isResolved;
+    private boolean isResolved;/asd
     private List<Runnable> callBacks;
 
     public Deferred() {
