@@ -46,7 +46,6 @@ public class CreateProduct extends Task<Product> {
             Product subPart = new Product(newPartId, partName);
             product.addPart(subPart);
         }
-
     }
 
     @Override
@@ -93,7 +92,7 @@ public class CreateProduct extends Task<Product> {
             //this.start();
         });
     }
-
+}
 
 //        String[] parts = plan.getParts();
 //        String[] tools = plan.getTools();
@@ -126,7 +125,7 @@ public class CreateProduct extends Task<Product> {
 //        }
 
 
-}
 
 
-}
+
+
