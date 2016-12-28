@@ -30,7 +30,7 @@ public class Simulator {
 
 
     /**
-     * Begin the simulation
+     * Begin the simulation.
      * Should not be called before attachWorkStealingThreadPool()
      */
     public static ConcurrentLinkedQueue<Product> start() {
