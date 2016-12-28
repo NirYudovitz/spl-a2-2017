@@ -10,27 +10,24 @@ import bgu.spl.a2.sim.tools.Tool;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicBoolean;
+
 
 /**
  * Created by Nirdun on 28.12.2016.
  */
 public class CreateProduct extends Task<Product> {
     //private final Product product;
-    private String productName;
     private Warehouse warehouse;
     private final ManufactoringPlan plan;
-    private long startId;
     private Product product;
     private boolean allToolsAvailable;
     private boolean allPartsAvailable;
-    private List<Tool> tools;
     private CountDownLatch countDownLatch;
 
     public CreateProduct(Product product, Warehouse wh, CountDownLatch countDownLatch) {
         this.product = product;
         this.warehouse = wh;
-        plan = warehouse.getPlan(productName);
+        plan = warehouse.getPlan(product.getName());
         allToolsAvailable = plan.getTools().length == 0;
         allPartsAvailable = plan.getParts().length == 0;
         this.countDownLatch = countDownLatch;
@@ -56,7 +53,7 @@ public class CreateProduct extends Task<Product> {
             getTools();
         } else {
             complete(product);
-            countDownLatch.countDown();
+            //countDownLatch.countDown();
         }
     }
 

@@ -10,6 +10,7 @@ import bgu.spl.a2.sim.conf.ManufactoringPlan;
 import bgu.spl.a2.sim.tasks.CreateProduct;
 import bgu.spl.a2.sim.tools.ToolsFactory;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -36,6 +37,7 @@ public class Simulator {
      */
     public static ConcurrentLinkedQueue<Product> start() {
         ConcurrentLinkedQueue<Product> manufactoredProducts = new ConcurrentLinkedQueue<>();
+        threadPool.start();
         for (List<JsonWaves> jwave:waves){
             int totalProducts= 0;
             for (int i = 0; i<jwave.size(); i++) {
@@ -47,7 +49,13 @@ public class Simulator {
 
                 for (int i=0; i<wave.getQty(); i++){
                     product = new Product(wave.getStartId() + i, wave.getProduct());
-                    new CreateProduct(product, wareHouse, countDownLatch);
+                    Task<Product> task = new CreateProduct(product, wareHouse, countDownLatch);
+                    String name = product.getName();
+                    threadPool.submit(task);
+                    task.getResult().whenResolved(() -> {
+                        System.out.println("created a: " + name);
+                        countDownLatch.countDown();
+                    });
                 }
             }
             try {

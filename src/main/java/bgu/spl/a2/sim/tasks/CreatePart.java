@@ -16,20 +16,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by Nirdun on 28.12.2016.
  */
 public class CreatePart extends Task<Product> {
-    //private final Product product;
-    private String productName;
+
     private Warehouse warehouse;
     private final ManufactoringPlan plan;
-    private long startId;
     private Product product;
     private boolean allToolsAvailable;
     private boolean allPartsAvailable;
-    private List<Tool> tools;
 
     public CreatePart(Product product, Warehouse wh) {
         this.product = product;
         this.warehouse = wh;
-        plan = warehouse.getPlan(productName);
+        plan = warehouse.getPlan(product.getName());
         allToolsAvailable = plan.getTools().length == 0;
         allPartsAvailable = plan.getParts().length == 0;
         if (product.getParts().size() == 0) {
@@ -47,28 +44,36 @@ public class CreatePart extends Task<Product> {
 
     }
 
-    private void newProduct() {
-        long newId = product.getStartId();
-        for (Product p : product.getParts()) {
-            newId += p.getFinalId();
-        }
-        for (Tool t : tools) {
-            newId += t.useOn(product);
-            warehouse.releaseTool(t);
-        }
-        complete(product);
-    }
 
     @Override
     protected void start() {
         if (!allPartsAvailable) {
             createParts();
         } else if (!allToolsAvailable) {
-
+            getTools();
         } else {
-
-
+            complete(product);
         }
+    }
+
+    private void getTools() {
+        List<Task<Deferred<Tool>>> toolsTasks = new ArrayList<>();
+        for (String tool : plan.getTools()) {
+            Deferred<Tool> deferredTool = warehouse.acquireTool(tool);
+            Runnable useTool = () -> {
+                long usageId = deferredTool.get().useOn(product);
+                warehouse.releaseTool(deferredTool.get());
+                product.setFinalId(product.getFinalId() + usageId);
+            };
+            deferredTool.whenResolved(useTool);
+            Task<Deferred<Tool>> getTool = new UseTool(product, deferredTool);
+            toolsTasks.add(getTool);
+        }
+        spawn(toolsTasks.toArray(new Task<?>[toolsTasks.size()]));
+        whenResolved(toolsTasks, () -> {
+            allToolsAvailable = true;
+            // TODO: 28/12/2016 check if continuing task
+        });
     }
 
     private void createParts() {
