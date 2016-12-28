@@ -14,7 +14,7 @@ public class JsonWaves {
     private Integer qty;
     @SerializedName("startId")
     @Expose
-    private Integer startId;
+    private long startId;
 
     public String getProduct() {
         return product;
@@ -32,11 +32,11 @@ public class JsonWaves {
         this.qty = qty;
     }
 
-    public Integer getStartId() {
+    public long getStartId() {
         return startId;
     }
 
-    public void setStartId(Integer startId) {
+    public void setStartId(long startId) {
         this.startId = startId;
     }
 

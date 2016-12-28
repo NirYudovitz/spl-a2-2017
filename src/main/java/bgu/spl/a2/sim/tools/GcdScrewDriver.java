@@ -10,7 +10,7 @@ import java.math.BigInteger;
 public class GcdScrewDriver implements Tool {
 
     public GcdScrewDriver() {
-        type = "GcdScrewDriver";
+        type = "gs-driver";
     }
 
     private String type;

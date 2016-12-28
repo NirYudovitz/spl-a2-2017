@@ -11,7 +11,7 @@ public class NextPrimeHammer implements Tool {
     private String type;
 
     public NextPrimeHammer() {
-        type = "NextPrimeHammer";
+        type = "np-hammer";
     }
 
     /**

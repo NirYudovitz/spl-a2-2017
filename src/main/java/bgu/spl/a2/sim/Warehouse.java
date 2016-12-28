@@ -39,11 +39,10 @@ public class Warehouse {
         amountOfHammers = new AtomicInteger(0);
         amountOfPliers = new AtomicInteger(0);
         productPlansMap = new HashMap<>();
-        amoutOfTool = new HashMap<>();
         amoutOfTool = new HashMap<String, AtomicInteger>() {{
-            put("GcdScrewDriver", new AtomicInteger(0));
-            put("NextPrimeHammer", new AtomicInteger(0));
-            put("RandomSumPliers", new AtomicInteger(0));
+            put("gs-driver", new AtomicInteger(0));
+            put("np-hammer", new AtomicInteger(0));
+            put("rs-pliers", new AtomicInteger(0));
         }};
         defferesHammersWaitingResolve = new ConcurrentLinkedQueue<>();
         defferesHammersWaitingResolve = new ConcurrentLinkedQueue<>();

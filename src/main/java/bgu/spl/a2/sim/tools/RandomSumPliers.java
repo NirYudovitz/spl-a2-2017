@@ -11,9 +11,8 @@ public class RandomSumPliers implements Tool {
     private String type;
 
     public RandomSumPliers() {
-        type = "RandomSumPliers";
+        type = "rs-pliers";
     }
-
     /**
      * @return tool name as string
      */

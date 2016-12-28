@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Simulator {
     private static WorkStealingThreadPool threadPool;
     private Warehouse wareHouse;
-    List<List<JsonWaves>> waves;
+    private static List<List<JsonWaves>> waves;
 
     public Simulator() {
         // TODO: 28/12/2016 check if must recieve threadPool
@@ -34,8 +34,12 @@ public class Simulator {
      */
     public static ConcurrentLinkedQueue<Product> start() {
         ConcurrentLinkedQueue<Product> manufactoredProducts = new ConcurrentLinkedQueue<>();
-//        ManufactoringPlan task;
-//        for (JsonWaves jw:waves)
+        for (List<JsonWaves> jw:waves){
+            for()
+            Product newProduct=new p
+
+        }
+
         return manufactoredProducts;
     }
 

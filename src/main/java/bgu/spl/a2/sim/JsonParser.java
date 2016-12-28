@@ -29,7 +29,8 @@ public class JsonParser {
         Gson gson = new Gson();
         String file = args[0];
         try (FileReader fileReader = new FileReader(file);) {
-            JsonRes jasonRes = gson.fromJson(fileReader, JsonRes.class);
+            JsonRes jasonRes;
+            jasonRes = gson.fromJson(new FileReader(file), JsonRes.class);
             numOfThreds = jasonRes.getThreads();
             tools = jasonRes.getTools();
             plans = jasonRes.getPlans();
