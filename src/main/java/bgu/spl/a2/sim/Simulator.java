@@ -22,19 +22,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * A class describing the simulator for part 2 of the assignment
  */
 public class Simulator {
-    static WorkStealingThreadPool threadPool;
-    private int numOfThreds;
-    private List<JsonTools> jTools;
-    private List<JsonPlans> jPlans;
-    private List<List<JsonWaves>> jWaves;
+    private static WorkStealingThreadPool threadPool;
     private Warehouse wareHouse;
+    List<List<JsonWaves>> waves;
 
     public Simulator() {
-        jPlans = new LinkedList<>();
-        jTools = new LinkedList<>();
-        jWaves = new LinkedList<>();
+        // TODO: 28/12/2016 check if must recieve threadPool
         wareHouse=new Warehouse();
-
+        waves = new LinkedList<>();
     }
 
 
@@ -44,48 +39,36 @@ public class Simulator {
      */
     public static ConcurrentLinkedQueue<Product> start() {
         ConcurrentLinkedQueue<Product> manufactoredProducts = new ConcurrentLinkedQueue<>();
-
+        return manufactoredProducts;
     }
 
-    public void readFromJson(String[] args) {
-        Gson gson = new Gson();
-        String file = args[0];
-        try (FileReader fileReader = new FileReader(file);) {
-            JsonRes jasonRes = gson.fromJson(fileReader, JsonRes.class);
-            numOfThreds = jasonRes.getThreads();
-            jTools=jasonRes.getTools();
-            jPlans=jasonRes.getPlans();
-            jWaves=jasonRes.getWaves();
-
-            //Todo function to switch case
-
-            for(JsonTools jtool:jTools) {
-                switch (jtool.getTool()) {
-                    case "gs-driver":
-                        wareHouse.addTool(new GcdScrewDriver(),jtool.getQty());
-                        break;
-                    case "np-hammer":
-                        wareHouse.addTool(new NextPrimeHammer(),jtool.getQty());
-                        break;
-                    case "rs-pliers":
-                        wareHouse.addTool(new RandomSumPliers(),jtool.getQty());
-                        break;
-                }
+    public void addToolsToWarehouse(List<JsonTools> jTools){
+        for(JsonTools jTool:jTools) {
+            switch (jTool.getTool()) {
+                case "gs-driver":
+                    wareHouse.addTool(new GcdScrewDriver(),jTool.getQty());
+                    break;
+                case "np-hammer":
+                    wareHouse.addTool(new NextPrimeHammer(),jTool.getQty());
+                    break;
+                case "rs-pliers":
+                    wareHouse.addTool(new RandomSumPliers(),jTool.getQty());
+                    break;
             }
-
-            for(JsonPlans jPlan:jPlans){
-                String newProduct=jPlan.getProduct();
-                String newParts[]=jPlan.getParts().toArray(new String[jPlan.getParts().size()]);
-                String newTools[]=jPlan.getTools().toArray(new String[jPlan.getTools().size()]);
-                wareHouse.addPlan(new ManufactoringPlan(newProduct,newParts,newTools));
-            }
-
-
-        } catch (IOException ioExc) {
-
         }
-
     }
+    public void addPlansToWarehouse(List<JsonPlans> jPlans) {
+        for(JsonPlans jPlan:jPlans){
+            String newProduct=jPlan.getProduct();
+            String newParts[]=jPlan.getParts().toArray(new String[jPlan.getParts().size()]);
+            String newTools[]=jPlan.getTools().toArray(new String[jPlan.getTools().size()]);
+            wareHouse.addPlan(new ManufactoringPlan(newProduct,newParts,newTools));
+        }
+    }
+    public void getWavesFromJson(List<List<JsonWaves>> waves){
+        this.waves = waves;
+    }
+
 
     /**
      * attach a WorkStealingThreadPool to the Simulator, this WorkStealingThreadPool will be used to run the simulation
@@ -97,5 +80,22 @@ public class Simulator {
     }
 
     public static int main(String[] args) {
+        Simulator simulator = new Simulator();
+
+        // ***** Parsing the Json file *****
+        JsonParser jsonParser = new JsonParser();
+        jsonParser.parse(args);
+
+        // ***** Adding parts and plans to the warehouse *****
+        simulator.addToolsToWarehouse(jsonParser.getTools());
+        simulator.addPlansToWarehouse(jsonParser.getPlans());
+
+        // ***** Adding waves *****
+        simulator.getWavesFromJson(jsonParser.getWaves());
+
+        //***** Creating a threadpool with the number of threads from the json file *****
+        attachWorkStealingThreadPool(new WorkStealingThreadPool(jsonParser.getNumOfThreds()));
+        simulator.start();
+        return 0;
     }
 }
