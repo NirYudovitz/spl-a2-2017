@@ -7,13 +7,8 @@ package bgu.spl.a2.sim;
 
 import bgu.spl.a2.*;
 import bgu.spl.a2.sim.conf.ManufactoringPlan;
-import bgu.spl.a2.sim.tools.GcdScrewDriver;
-import bgu.spl.a2.sim.tools.NextPrimeHammer;
-import bgu.spl.a2.sim.tools.RandomSumPliers;
-import com.google.gson.Gson;
+import bgu.spl.a2.sim.tools.ToolsFactory;
 
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -39,22 +34,28 @@ public class Simulator {
      */
     public static ConcurrentLinkedQueue<Product> start() {
         ConcurrentLinkedQueue<Product> manufactoredProducts = new ConcurrentLinkedQueue<>();
+//        ManufactoringPlan task;
+//        for (JsonWaves jw:waves)
         return manufactoredProducts;
     }
 
     public void addToolsToWarehouse(List<JsonTools> jTools){
         for(JsonTools jTool:jTools) {
-            switch (jTool.getTool()) {
-                case "gs-driver":
-                    wareHouse.addTool(new GcdScrewDriver(),jTool.getQty());
-                    break;
-                case "np-hammer":
-                    wareHouse.addTool(new NextPrimeHammer(),jTool.getQty());
-                    break;
-                case "rs-pliers":
-                    wareHouse.addTool(new RandomSumPliers(),jTool.getQty());
-                    break;
-            }
+
+            wareHouse.addTool(ToolsFactory.createTool(jTool.getTool()),jTool.getQty());
+
+//            switch (jTool.getTool()) {
+//                case "gs-driver":
+//                    wareHouse.addTool(new GcdScrewDriver(),jTool.getQty());
+//                    break;
+//                case "np-hammer":
+//                    wareHouse.addTool(new NextPrimeHammer(),jTool.getQty());
+//                    break;
+//                case "rs-pliers":
+//                    wareHouse.addTool(new RandomSumPliers(),jTool.getQty());
+//                    break;
+//            }
+
         }
     }
     public void addPlansToWarehouse(List<JsonPlans> jPlans) {
@@ -79,7 +80,7 @@ public class Simulator {
         threadPool = myWorkStealingThreadPool;
     }
 
-    public static int main(String[] args) {
+    public static void main(String[] args) {
         Simulator simulator = new Simulator();
 
         // ***** Parsing the Json file *****
@@ -96,6 +97,6 @@ public class Simulator {
         //***** Creating a threadpool with the number of threads from the json file *****
         attachWorkStealingThreadPool(new WorkStealingThreadPool(jsonParser.getNumOfThreds()));
         simulator.start();
-        return 0;
+//        return 0; //todo main int
     }
 }

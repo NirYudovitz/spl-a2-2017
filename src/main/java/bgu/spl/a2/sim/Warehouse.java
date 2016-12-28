@@ -1,12 +1,11 @@
 package bgu.spl.a2.sim;
 
-import bgu.spl.a2.sim.tools.GcdScrewDriver;
-import bgu.spl.a2.sim.tools.NextPrimeHammer;
-import bgu.spl.a2.sim.tools.RandomSumPliers;
+import bgu.spl.a2.sim.tools.ToolsFactory;
 import bgu.spl.a2.sim.tools.Tool;
 import bgu.spl.a2.sim.conf.ManufactoringPlan;
 import bgu.spl.a2.Deferred;
 
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -26,6 +25,7 @@ public class Warehouse {
     private AtomicInteger amountOfHammers;
     private AtomicInteger amountOfPliers;
     private Map<String, ManufactoringPlan> productPlansMap;
+    private Map<String, AtomicInteger> amoutOfTool;
     private ConcurrentLinkedQueue<Deferred<Tool>> defferesScerawDriversWaitingResolve;
     private ConcurrentLinkedQueue<Deferred<Tool>> defferesHammersWaitingResolve;
     private ConcurrentLinkedQueue<Deferred<Tool>> defferesPliersWaitingResolve;
@@ -38,10 +38,18 @@ public class Warehouse {
         amountOfScrewDrivers = new AtomicInteger(0);
         amountOfHammers = new AtomicInteger(0);
         amountOfPliers = new AtomicInteger(0);
+        productPlansMap = new HashMap<>();
+        amoutOfTool = new HashMap<>();
+        amoutOfTool = new HashMap<String, AtomicInteger>() {{
+            put("GcdScrewDriver", new AtomicInteger(0));
+            put("NextPrimeHammer", new AtomicInteger(0));
+            put("RandomSumPliers", new AtomicInteger(0));
+        }};
         defferesHammersWaitingResolve = new ConcurrentLinkedQueue<>();
         defferesHammersWaitingResolve = new ConcurrentLinkedQueue<>();
         defferesHammersWaitingResolve = new ConcurrentLinkedQueue<>();
     }
+
 
     /**
      * Tool acquisition procedure
@@ -54,42 +62,53 @@ public class Warehouse {
         // TODO: 26/12/2016 think on some smarter way to do this
         // TODO: 26/12/2016 handle catch
         // TODO: 26/12/2016 try without sync
-        Deferred<Tool> deferredTool=new Deferred<>();
-        switch (type) {
-            case "GcdScrewDriver":
-                synchronized (this) {
-                    if (amountOfScrewDrivers.get() > 0) {
-                        amountOfScrewDrivers.decrementAndGet();
-                        deferredTool.resolve(new GcdScrewDriver());
-                    }else {
-                        defferesScerawDriversWaitingResolve.add(deferredTool);
-                    }
 
-                    break;
-                }
-            case "NextPrimeHammer":
-                synchronized (this) {
-                    if (amountOfHammers.get() > 0) {
-                        amountOfHammers.decrementAndGet();
-                        deferredTool.resolve(new NextPrimeHammer());
-                    }else {
-                        defferesHammersWaitingResolve.add(deferredTool);
-                    }
-                    break;
-                }
-            case "RandomSumPliers":
-                synchronized (this) {
-                    if (amountOfPliers.get() > 0) {
-                        amountOfPliers.decrementAndGet();
-                        deferredTool.resolve(new RandomSumPliers());
-                    }else {
-                        defferesPliersWaitingResolve.add(deferredTool);
-                    }
-                    break;
-                }
+        Deferred<Tool> deferredTool = new Deferred<>();
+        if (amoutOfTool.get(type).get() > 0) {
+            amoutOfTool.get(type).decrementAndGet();
+            deferredTool.resolve(ToolsFactory.createTool(type));
+        } else {
+            defferesScerawDriversWaitingResolve.add(deferredTool);
         }
+
         return deferredTool;
     }
+
+//
+//        switch (type) {
+//            case "GcdScrewDriver":
+//                synchronized (this) {
+//                    if (amountOfScrewDrivers.get() > 0) {
+//                        amountOfScrewDrivers.decrementAndGet();
+//                        deferredTool.resolve(new GcdScrewDriver());
+//                    } else {
+//                        defferesScerawDriversWaitingResolve.add(deferredTool);
+//                    }
+//
+//                    break;
+//                }
+//            case "NextPrimeHammer":
+//                synchronized (this) {
+//                    if (amountOfHammers.get() > 0) {
+//                        amountOfHammers.decrementAndGet();
+//                        deferredTool.resolve(new NextPrimeHammer());
+//                    } else {
+//                        defferesHammersWaitingResolve.add(deferredTool);
+//                    }
+//                    break;
+//                }
+//            case "RandomSumPliers":
+//                synchronized (this) {
+//                    if (amountOfPliers.get() > 0) {
+//                        amountOfPliers.decrementAndGet();
+//                        deferredTool.resolve(new RandomSumPliers());
+//                    } else {
+//                        defferesPliersWaitingResolve.add(deferredTool);
+//                    }
+//                    break;
+//                }
+//        }
+//    }
 
     /**
      * Tool return procedure - releases a tool which becomes available in the warehouse upon completion.
@@ -98,17 +117,7 @@ public class Warehouse {
      */
     public void releaseTool(Tool tool) {
         // TODO: 26/12/2016 maybe sync?
-        switch (tool.getType()) {
-            case "GcdScrewDriver":
-                amountOfScrewDrivers.incrementAndGet();
-                break;
-            case "NextPrimeHammer":
-                amountOfHammers.incrementAndGet();
-                break;
-            case "RandomSumPliers":
-                amountOfPliers.incrementAndGet();
-                break;
-        }
+        amoutOfTool.get(tool.getType()).incrementAndGet();
     }
 
     /**
@@ -139,17 +148,10 @@ public class Warehouse {
      */
     public void addTool(Tool tool, int qty) {
         // TODO: 26/12/2016 think on some smarter way to do this
-        switch (tool.getType()) {
-            case "GcdScrewDriver":
-                amountOfScrewDrivers.getAndAdd(qty);
-                break;
-            case "NextPrimeHammer":
-                amountOfHammers.getAndAdd(qty);
-                break;
-            case "RandomSumPliers":
-                amountOfPliers.getAndAdd(qty);
-                break;
-        }
+        amoutOfTool.get(tool.getType()).getAndAdd(qty);
+
     }
 
 }
+
+
