@@ -30,10 +30,13 @@ public class GcdScrewDriver implements Tool {
      */
     @Override
     public long useOn(Product p) {
-        BigInteger productID = BigInteger.valueOf(p.getStartId());
-        long tempReverse = Long.reverse(p.getStartId());
-        BigInteger reverseProductID = BigInteger.valueOf(tempReverse);
-        long ScrewDriverID = (productID.gcd(reverseProductID)).longValue();
-        return ScrewDriverID;
+        long sumOfUsage = 0;
+        for (Product subPart : p.getParts()) {
+            BigInteger subPartID = BigInteger.valueOf(subPart.getFinalId());
+            long tempReverse = Long.reverse(subPart.getFinalId());
+            BigInteger reverseProductID = BigInteger.valueOf(tempReverse);
+            sumOfUsage += Math.abs(subPartID.gcd(reverseProductID).longValue());
+        }
+        return sumOfUsage;
     }
 }

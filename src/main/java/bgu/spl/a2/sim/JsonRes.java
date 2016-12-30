@@ -1,9 +1,8 @@
 
-package bgu.spl.a2;
+package bgu.spl.a2.sim;
 
 import java.util.List;
 
-import bgu.spl.a2.sim.*;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

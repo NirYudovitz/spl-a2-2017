@@ -1,5 +1,5 @@
 
-package bgu.spl.a2;
+package bgu.spl.a2.sim;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

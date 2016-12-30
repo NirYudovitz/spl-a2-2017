@@ -85,8 +85,9 @@ public class CreateProduct extends Task<Product> {
         }
         spawn(partsTasks.toArray(new Task<?>[partsTasks.size()]));
         whenResolved(partsTasks, () -> {
-            allPartsAvailable = true;
+            //allPartsAvailable = true;
             //this.start();
+            //getTools();
         });
     }
 }

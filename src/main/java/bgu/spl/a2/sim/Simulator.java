@@ -10,7 +10,6 @@ import bgu.spl.a2.sim.conf.ManufactoringPlan;
 import bgu.spl.a2.sim.tasks.CreateProduct;
 import bgu.spl.a2.sim.tools.ToolsFactory;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -24,8 +23,7 @@ public class Simulator {
     private static Warehouse wareHouse;
     private static List<List<JsonWaves>> waves;
 
-    public Simulator() {
-        // TODO: 28/12/2016 check if must recieve threadPool
+    static {
         wareHouse=new Warehouse();
         waves = new LinkedList<>();
     }
@@ -65,11 +63,16 @@ public class Simulator {
                 // TODO: 28/12/2016 Do something
             }
         }
+        try {
+            threadPool.shutdown();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         return manufactoredProducts;
     }
 
-    public void addToolsToWarehouse(List<JsonTools> jTools){
+    public static void addToolsToWarehouse(List<JsonTools> jTools){
         for(JsonTools jTool:jTools) {
 
             wareHouse.addTool(ToolsFactory.createTool(jTool.getTool()),jTool.getQty());
@@ -88,7 +91,7 @@ public class Simulator {
 
         }
     }
-    public void addPlansToWarehouse(List<JsonPlans> jPlans) {
+    public static void addPlansToWarehouse(List<JsonPlans> jPlans) {
         for(JsonPlans jPlan:jPlans){
             String newProduct=jPlan.getProduct();
             String newParts[]=jPlan.getParts().toArray(new String[jPlan.getParts().size()]);
@@ -96,8 +99,8 @@ public class Simulator {
             wareHouse.addPlan(new ManufactoringPlan(newProduct,newParts,newTools));
         }
     }
-    public void getWavesFromJson(List<List<JsonWaves>> waves){
-        this.waves = waves;
+    public static void getWavesFromJson(List<List<JsonWaves>> waves){
+        Simulator.waves = waves;
     }
 
 
@@ -111,22 +114,22 @@ public class Simulator {
     }
 
     public static void main(String[] args) {
-        Simulator simulator = new Simulator();
+        //Simulator simulator = new Simulator();
 
         // ***** Parsing the Json file *****
         JsonParser jsonParser = new JsonParser();
         jsonParser.parse(args);
 
         // ***** Adding parts and plans to the warehouse *****
-        simulator.addToolsToWarehouse(jsonParser.getTools());
-        simulator.addPlansToWarehouse(jsonParser.getPlans());
+        Simulator.addToolsToWarehouse(jsonParser.getTools());
+        Simulator.addPlansToWarehouse(jsonParser.getPlans());
 
         // ***** Adding waves *****
-        simulator.getWavesFromJson(jsonParser.getWaves());
+        Simulator.getWavesFromJson(jsonParser.getWaves());
 
         //***** Creating a threadpool with the number of threads from the json file *****
         attachWorkStealingThreadPool(new WorkStealingThreadPool(jsonParser.getNumOfThreds()));
-        simulator.start();
+        Simulator.start();
 //        return 0; //todo main int
     }
 }

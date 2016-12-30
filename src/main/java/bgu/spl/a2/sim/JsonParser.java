@@ -1,9 +1,5 @@
 package bgu.spl.a2.sim;
 
-import bgu.spl.a2.JsonPlans;
-import bgu.spl.a2.JsonRes;
-import bgu.spl.a2.JsonTools;
-import bgu.spl.a2.JsonWaves;
 import com.google.gson.Gson;
 
 import java.io.FileReader;

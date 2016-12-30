@@ -29,11 +29,14 @@ public class RandomSumPliers implements Tool {
      */
     @Override
     public long useOn(Product p) {
-        long sumOfProducts = (p.getStartId()) % 10000;
-        long plierID = 0;
-        Random rnd = new Random();
-        for (long i = 0; i < sumOfProducts; i++)
-            plierID += rnd.nextInt();
-        return plierID;
+        long sumOfUsage = 0;
+        for (Product subPart : p.getParts()) {
+            long sumOfProducts = (subPart.getFinalId()) % 10000;
+            Random rnd = new Random(subPart.getFinalId());
+            for (long i = 0; i < sumOfProducts; i++)
+                sumOfUsage += rnd.nextInt();
+            // TODO: 30/12/2016 math.abs?
+        }
+        return sumOfUsage;
     }
 }

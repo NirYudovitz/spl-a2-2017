@@ -30,8 +30,11 @@ public class NextPrimeHammer implements Tool {
      */
     @Override
     public long useOn(Product p) {
-        BigInteger productID = BigInteger.valueOf(p.getStartId());
-        long HammerID = (productID.nextProbablePrime()).longValue();
-        return HammerID;
+        long sumOfUsage = 0;
+        for(Product subPart : p.getParts()) {
+            BigInteger partID = BigInteger.valueOf(subPart.getFinalId());
+            sumOfUsage += Math.abs(partID.nextProbablePrime().longValue());
+        }
+        return sumOfUsage;
     }
 }
