@@ -9,6 +9,8 @@ import bgu.spl.a2.sim.tools.Tool;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 /**
@@ -59,35 +61,49 @@ public class CreateProduct extends Task<Product> {
     }
 
     private void getTools() {
-        List<Task<Deferred<Tool>>> acquireToolsTasks = new ArrayList<>();
+        //List<Task<Deferred<Tool>>> acquireToolsTasks = new ArrayList<>();
+        AtomicInteger numOfToolsNeeded = new AtomicInteger(plan.getTools().length);
+        AtomicLong sumOfUsage = new AtomicLong(0);
+
         for (String tool : plan.getTools()) {
+            System.out.println(Thread.currentThread().getId() + " is trying to get " + tool);
             Deferred<Tool> deferredTool = warehouse.acquireTool(tool);
             Runnable useTool = () -> {
-                long usageId = deferredTool.get().useOn(product);
+                sumOfUsage.addAndGet(deferredTool.get().useOn(product));
                 warehouse.releaseTool(deferredTool.get());
-                product.setFinalId(product.getFinalId() + usageId);
+                numOfToolsNeeded.getAndDecrement();
+
+                if (numOfToolsNeeded.compareAndSet(0,0)){
+                    System.out.println(Thread.currentThread().getId() + " Finished to create: " + product.getName());
+                    product.setFinalId(product.getStartId() + sumOfUsage.get());
+                    complete(product);
+                }
             };
+
             deferredTool.whenResolved(useTool);
-            Task<Deferred<Tool>> getTool = new UseTool(product, deferredTool);
-            acquireToolsTasks.add(getTool);
+
+            //Task<Deferred<Tool>> getTool = new UseTool(product, deferredTool);
+           // acquireToolsTasks.add(getTool);
         }
-        if (!acquireToolsTasks.isEmpty()) {
-            spawn(acquireToolsTasks.toArray(new Task<?>[acquireToolsTasks.size()]));
-            whenResolved(acquireToolsTasks, () -> {
-                //allToolsAvailable = true;
-                // TODO: 28/12/2016 check if continuing task
-                complete(product);
-            });
-        }
-        else{
-            complete(product);
-        }
+
+//        if (!acquireToolsTasks.isEmpty()) {
+//            spawn(acquireToolsTasks.toArray(new Task<?>[acquireToolsTasks.size()]));
+//            whenResolved(acquireToolsTasks, () -> {
+//                //allToolsAvailable = true;
+//                // TODO: 28/12/2016 check if continuing task
+//                System.out.println(Thread.currentThread().getId() + "is compleating: " + product.getName());
+//                complete(product);
+//            });
+//        }
+//        else{
+//            complete(product);
+//        }
     }
 
     private void createSubParts() {
         List<Task<Product>> createSubPartsTasks = new ArrayList<>();
         for (Product subPart : product.getParts()) {
-            Task<Product> createSubPart = new CreatePart(subPart, warehouse);
+            Task<Product> createSubPart = new CreateProduct(subPart, warehouse);
             createSubPartsTasks.add(createSubPart);
         }
         if (!createSubPartsTasks.isEmpty()) {

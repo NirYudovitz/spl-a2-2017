@@ -38,7 +38,9 @@ public class Simulator {
         threadPool.start();
         for (List<JsonWaves> jwave:waves){
             int totalProducts= 0;
+            System.out.println("Starting a new wave");
             for (int i = 0; i<jwave.size(); i++) {
+
                 totalProducts += jwave.get(i).getQty();
             }
             CountDownLatch countDownLatch = new CountDownLatch(totalProducts);
@@ -46,12 +48,14 @@ public class Simulator {
                 Product product;
 
                 for (int i=0; i<wave.getQty(); i++){
+
                     product = new Product(wave.getStartId() + i, wave.getProduct());
                     Task<Product> task = new CreateProduct(product, wareHouse);
                     String name = product.getName();
                     threadPool.submit(task);
                     task.getResult().whenResolved(() -> {
                         System.out.println("created a: " + name);
+                        System.out.println(countDownLatch.getCount());
                         countDownLatch.countDown();
                     });
                 }
