@@ -20,45 +20,46 @@ public class CreateProduct extends Task<Product> {
     private Warehouse warehouse;
     private final ManufactoringPlan plan;
     private Product product;
-    private boolean allToolsAvailable;
-    private boolean allPartsAvailable;
-    private CountDownLatch countDownLatch;
+    //private boolean allToolsAvailable;
+    //private boolean allPartsAvailable;
+    //private CountDownLatch countDownLatch;
 
-    public CreateProduct(Product product, Warehouse wh, CountDownLatch countDownLatch) {
+    public CreateProduct(Product product, Warehouse warehouse) {
         this.product = product;
-        this.warehouse = wh;
+        this.warehouse = warehouse;
         plan = warehouse.getPlan(product.getName());
-        allToolsAvailable = plan.getTools().length == 0;
-        allPartsAvailable = plan.getParts().length == 0;
-        this.countDownLatch = countDownLatch;
-        if (product.getParts().size() == 0) {
-            addPartsToProduct();
-        }
+        //allToolsAvailable = plan.getTools().length == 0;
+        //allPartsAvailable = plan.getParts().length == 0;
+//        if (product.getParts().size() == 0) {
+//            addPartsToProduct();
+//        }
+        addSubPartsToProduct();
     }
 
-    private void addPartsToProduct() {
+    private void addSubPartsToProduct() {
         String[] parts = plan.getParts();
-        long newPartId = product.getStartId() + 1;
-        for (String partName : parts) {
-            Product subPart = new Product(newPartId, partName);
+        long subPartId = product.getStartId() + 1;
+        for (String subPartName : parts) {
+            Product subPart = new Product(subPartId, subPartName);
             product.addPart(subPart);
         }
     }
 
     @Override
     protected void start() {
-        if (!allPartsAvailable) {
-            createParts();
-        } else if (!allToolsAvailable) {
-            getTools();
-        } else {
-            complete(product);
-            //countDownLatch.countDown();
-        }
+        createSubParts();
+//        if (!allPartsAvailable) {
+//            createSubParts();
+//        } else if (!allToolsAvailable) {
+//            getTools();
+//        } else {
+//            complete(product);
+//            //countDownLatch.countDown();
+//        }
     }
 
     private void getTools() {
-        List<Task<Deferred<Tool>>> toolsTasks = new ArrayList<>();
+        List<Task<Deferred<Tool>>> acquireToolsTasks = new ArrayList<>();
         for (String tool : plan.getTools()) {
             Deferred<Tool> deferredTool = warehouse.acquireTool(tool);
             Runnable useTool = () -> {
@@ -68,27 +69,38 @@ public class CreateProduct extends Task<Product> {
             };
             deferredTool.whenResolved(useTool);
             Task<Deferred<Tool>> getTool = new UseTool(product, deferredTool);
-            toolsTasks.add(getTool);
+            acquireToolsTasks.add(getTool);
         }
-        spawn(toolsTasks.toArray(new Task<?>[toolsTasks.size()]));
-        whenResolved(toolsTasks, () -> {
-            allToolsAvailable = true;
-            // TODO: 28/12/2016 check if continuing task
-        });
+        if (!acquireToolsTasks.isEmpty()) {
+            spawn(acquireToolsTasks.toArray(new Task<?>[acquireToolsTasks.size()]));
+            whenResolved(acquireToolsTasks, () -> {
+                //allToolsAvailable = true;
+                // TODO: 28/12/2016 check if continuing task
+                complete(product);
+            });
+        }
+        else{
+            complete(product);
+        }
     }
 
-    private void createParts() {
-        List<Task<Product>> partsTasks = new ArrayList<>();
+    private void createSubParts() {
+        List<Task<Product>> createSubPartsTasks = new ArrayList<>();
         for (Product subPart : product.getParts()) {
             Task<Product> createSubPart = new CreatePart(subPart, warehouse);
-            partsTasks.add(createSubPart);
+            createSubPartsTasks.add(createSubPart);
         }
-        spawn(partsTasks.toArray(new Task<?>[partsTasks.size()]));
-        whenResolved(partsTasks, () -> {
-            //allPartsAvailable = true;
-            //this.start();
-            //getTools();
-        });
+        if (!createSubPartsTasks.isEmpty()) {
+            spawn(createSubPartsTasks.toArray(new Task<?>[createSubPartsTasks.size()]));
+            whenResolved(createSubPartsTasks, () -> {
+                //allPartsAvailable = true;
+                //this.start();
+                getTools();
+            });
+        }
+        else {
+            getTools();
+        }
     }
 }
 
@@ -98,8 +110,8 @@ public class CreateProduct extends Task<Product> {
 //        int numOfTools = tools.length;
 //        if (parts.length == 0) {
 //            for (String tool : tools) {
-//                Deferred<Tool> defferedTool = warehouse.acquireTool(tool);
-//                haveTools &= defferedTool.isResolved();
+//                Deferred<Tool> deferredTool = warehouse.acquireTool(tool);
+//                haveTools &= deferredTool.isResolved();
 //            }
 //
 //            if (haveTools) {

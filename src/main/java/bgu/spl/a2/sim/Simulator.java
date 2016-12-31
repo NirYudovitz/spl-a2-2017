@@ -47,7 +47,7 @@ public class Simulator {
 
                 for (int i=0; i<wave.getQty(); i++){
                     product = new Product(wave.getStartId() + i, wave.getProduct());
-                    Task<Product> task = new CreateProduct(product, wareHouse, countDownLatch);
+                    Task<Product> task = new CreateProduct(product, wareHouse);
                     String name = product.getName();
                     threadPool.submit(task);
                     task.getResult().whenResolved(() -> {

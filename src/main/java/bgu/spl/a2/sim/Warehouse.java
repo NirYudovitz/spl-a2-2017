@@ -26,9 +26,9 @@ public class Warehouse {
     private AtomicInteger amountOfPliers;
     private Map<String, ManufactoringPlan> productPlansMap;
     private Map<String, AtomicInteger> amoutOfTool;
-    private ConcurrentLinkedQueue<Deferred<Tool>> defferesScerawDriversWaitingResolve;
-    private ConcurrentLinkedQueue<Deferred<Tool>> defferesHammersWaitingResolve;
-    private ConcurrentLinkedQueue<Deferred<Tool>> defferesPliersWaitingResolve;
+    private ConcurrentLinkedQueue<Deferred<Tool>> deferredScerawDriversWaitingResolve;
+    private ConcurrentLinkedQueue<Deferred<Tool>> deferredHammersWaitingResolve;
+    private ConcurrentLinkedQueue<Deferred<Tool>> deferredPliersWaitingResolve;
 
     /**
      * Constructor
@@ -44,9 +44,9 @@ public class Warehouse {
             put("np-hammer", new AtomicInteger(0));
             put("rs-pliers", new AtomicInteger(0));
         }};
-        defferesHammersWaitingResolve = new ConcurrentLinkedQueue<>();
-        defferesHammersWaitingResolve = new ConcurrentLinkedQueue<>();
-        defferesHammersWaitingResolve = new ConcurrentLinkedQueue<>();
+        deferredHammersWaitingResolve = new ConcurrentLinkedQueue<>();
+        deferredHammersWaitingResolve = new ConcurrentLinkedQueue<>();
+        deferredHammersWaitingResolve = new ConcurrentLinkedQueue<>();
     }
 
 
@@ -67,7 +67,7 @@ public class Warehouse {
             amoutOfTool.get(type).decrementAndGet();
             deferredTool.resolve(ToolsFactory.createTool(type));
         } else {
-            defferesScerawDriversWaitingResolve.add(deferredTool);
+            deferredScerawDriversWaitingResolve.add(deferredTool);
         }
 
         return deferredTool;
@@ -81,7 +81,7 @@ public class Warehouse {
 //                        amountOfScrewDrivers.decrementAndGet();
 //                        deferredTool.resolve(new GcdScrewDriver());
 //                    } else {
-//                        defferesScerawDriversWaitingResolve.add(deferredTool);
+//                        deferredScerawDriversWaitingResolve.add(deferredTool);
 //                    }
 //
 //                    break;
@@ -92,7 +92,7 @@ public class Warehouse {
 //                        amountOfHammers.decrementAndGet();
 //                        deferredTool.resolve(new NextPrimeHammer());
 //                    } else {
-//                        defferesHammersWaitingResolve.add(deferredTool);
+//                        deferredHammersWaitingResolve.add(deferredTool);
 //                    }
 //                    break;
 //                }
@@ -102,7 +102,7 @@ public class Warehouse {
 //                        amountOfPliers.decrementAndGet();
 //                        deferredTool.resolve(new RandomSumPliers());
 //                    } else {
-//                        defferesPliersWaitingResolve.add(deferredTool);
+//                        deferredPliersWaitingResolve.add(deferredTool);
 //                    }
 //                    break;
 //                }

@@ -37,6 +37,6 @@ public class RandomSumPliers implements Tool {
                 sumOfUsage += rnd.nextInt();
             // TODO: 30/12/2016 math.abs?
         }
-        return sumOfUsage;
+        return Math.abs(sumOfUsage);
     }
 }
