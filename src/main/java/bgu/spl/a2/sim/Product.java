@@ -69,5 +69,12 @@ public class Product {
         currentId.addAndGet(id);
     }
 
-
+    @Override
+    public String toString() {
+        String toString = "";
+        for (Product subPart:getParts()) {
+            toString += subPart.toString();
+        }
+        return "ProductName: " + getName() + " Product Id = " + getFinalId() + "\nPartsList {\n" + toString + "}\n";
+    }
 }

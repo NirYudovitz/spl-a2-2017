@@ -48,7 +48,7 @@ public class CreateProduct extends Task<Product> {
 
     @Override
     protected void start() {
-        System.out.println(Thread.currentThread().getId() + " is starting to create: " + product.getName());
+        //System.out.println(Thread.currentThread().getId() + " is starting to create: " + product.getName() + " +++++++++++++++++");
         createSubParts();
 //        if (!allPartsAvailable) {
 //            createSubParts();
@@ -65,25 +65,33 @@ public class CreateProduct extends Task<Product> {
         AtomicInteger numOfToolsNeeded = new AtomicInteger(plan.getTools().length);
         AtomicLong sumOfUsage = new AtomicLong(0);
 
-        for (String tool : plan.getTools()) {
-            System.out.println(Thread.currentThread().getId() + " is trying to get " + tool);
-            Deferred<Tool> deferredTool = warehouse.acquireTool(tool);
-            Runnable useTool = () -> {
-                sumOfUsage.addAndGet(deferredTool.get().useOn(product));
-                warehouse.releaseTool(deferredTool.get());
-                numOfToolsNeeded.getAndDecrement();
+        if (numOfToolsNeeded.compareAndSet(0, 0)) {
+            for (Product subPart: product.getParts()){
+                sumOfUsage.addAndGet(subPart.getFinalId());
+            }
+            product.setFinalId(sumOfUsage.get());
+            complete(product);
+        } else {
+            for (String tool : plan.getTools()) {
+                //System.out.println(Thread.currentThread().getId() + " is trying to get " + tool);
+                Deferred<Tool> deferredTool = warehouse.acquireTool(tool);
+                Runnable useTool = () -> {
+                    sumOfUsage.addAndGet(deferredTool.get().useOn(product));
+                    warehouse.releaseTool(deferredTool.get());
+                    numOfToolsNeeded.getAndDecrement();
 
-                if (numOfToolsNeeded.compareAndSet(0,0)){
-                    System.out.println(Thread.currentThread().getId() + " Finished to create: " + product.getName());
-                    product.setFinalId(product.getStartId() + sumOfUsage.get());
-                    complete(product);
-                }
-            };
+                    if (numOfToolsNeeded.compareAndSet(0, 0)) {
+                        //System.out.println(Thread.currentThread().getId() + " Finished to create: " + product.getName() + "+++++++++++++");
+                        product.setFinalId(product.getStartId() + sumOfUsage.get());
+                        complete(product);
+                    }
+                };
 
-            deferredTool.whenResolved(useTool);
+                deferredTool.whenResolved(useTool);
 
-            //Task<Deferred<Tool>> getTool = new UseTool(product, deferredTool);
-           // acquireToolsTasks.add(getTool);
+                //Task<Deferred<Tool>> getTool = new UseTool(product, deferredTool);
+                // acquireToolsTasks.add(getTool);
+            }
         }
 
 //        if (!acquireToolsTasks.isEmpty()) {
@@ -101,12 +109,15 @@ public class CreateProduct extends Task<Product> {
     }
 
     private void createSubParts() {
-        List<Task<Product>> createSubPartsTasks = new ArrayList<>();
-        for (Product subPart : product.getParts()) {
-            Task<Product> createSubPart = new CreateProduct(subPart, warehouse);
-            createSubPartsTasks.add(createSubPart);
-        }
-        if (!createSubPartsTasks.isEmpty()) {
+        if (plan.getParts().length == 0) {
+            getTools();
+        } else {
+            List<Task<Product>> createSubPartsTasks = new ArrayList<>();
+            for (Product subPart : product.getParts()) {
+                Task<Product> createSubPart = new CreateProduct(subPart, warehouse);
+                createSubPartsTasks.add(createSubPart);
+            }
+
             spawn(createSubPartsTasks.toArray(new Task<?>[createSubPartsTasks.size()]));
             whenResolved(createSubPartsTasks, () -> {
                 //allPartsAvailable = true;
@@ -114,9 +125,7 @@ public class CreateProduct extends Task<Product> {
                 getTools();
             });
         }
-        else {
-            getTools();
-        }
+
     }
 }
 

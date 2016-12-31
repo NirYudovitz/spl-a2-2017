@@ -36,36 +36,45 @@ public class Simulator {
     public static ConcurrentLinkedQueue<Product> start() {
         ConcurrentLinkedQueue<Product> manufacturedProducts = new ConcurrentLinkedQueue<>();
         threadPool.start();
+        int j = 0;
         for (List<JsonWaves> jwave:waves){
+
             int totalProducts= 0;
-            System.out.println("Starting a new wave");
+            System.out.println("Starting a new wave: " + j);
             for (int i = 0; i<jwave.size(); i++) {
 
                 totalProducts += jwave.get(i).getQty();
             }
             CountDownLatch countDownLatch = new CountDownLatch(totalProducts);
+            //System.out.println("the length of the wave is: " + jwave.size());
             for(JsonWaves wave:jwave) {
-                Product product;
+                System.out.println("wave starting to create: " + wave.getQty() + " " + wave.getProduct());
+                //Product product;
 
                 for (int i=0; i<wave.getQty(); i++){
 
-                    product = new Product(wave.getStartId() + i, wave.getProduct());
+                    Product product = new Product(wave.getStartId() + i, wave.getProduct());
+                    //System.out.println("starting task" + wave.getProduct());
                     Task<Product> task = new CreateProduct(product, wareHouse);
                     String name = product.getName();
                     threadPool.submit(task);
                     task.getResult().whenResolved(() -> {
-                        System.out.println("created a: " + name);
-                        System.out.println(countDownLatch.getCount());
+                        //System.out.print("created a: " + name + " changing count to: ");
+                        //System.out.println(countDownLatch.getCount());
                         countDownLatch.countDown();
+                        manufacturedProducts.add(product);
                     });
                 }
             }
             try {
+                //System.out.println("I'm waiting.......");
                 countDownLatch.await();
             }
             catch (InterruptedException e){
                 // TODO: 28/12/2016 Do something
+                e.printStackTrace();
             }
+            j++;
         }
         try {
             threadPool.shutdown();
@@ -133,7 +142,10 @@ public class Simulator {
 
         //***** Creating a threadpool with the number of threads from the json file *****
         attachWorkStealingThreadPool(new WorkStealingThreadPool(jsonParser.getNumOfThreds()));
-        Simulator.start();
+        ConcurrentLinkedQueue<Product> manufacturedProducts = Simulator.start();
+        for (Product product : manufacturedProducts){
+            System.out.println(product.toString());
+        }
 //        return 0; //todo main int
     }
 }
