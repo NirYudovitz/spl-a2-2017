@@ -6,16 +6,16 @@ import bgu.spl.a2.sim.Product;
  * a class that represents a manufacturing plan.
  *
  **/
-public class ManufactoringPlan {
+public class ManufacturingPlan {
 	final private String product;
 	private String parts [];
 	private String tools [];
-	/** ManufactoringPlan constructor
+	/** ManufacturingPlan constructor
 	* @param product - product name
 	* @param parts - array of strings describing the plans part names
 	* @param tools - array of strings describing the plans tools names
 	*/
-    public ManufactoringPlan(String product, String[] parts, String[] tools){
+    public ManufacturingPlan(String product, String[] parts, String[] tools){
     	this.product = product;
     	this.parts = parts;
     	this.tools = tools;

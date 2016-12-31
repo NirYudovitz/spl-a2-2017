@@ -4,13 +4,11 @@ import bgu.spl.a2.Deferred;
 import bgu.spl.a2.Task;
 import bgu.spl.a2.sim.Product;
 import bgu.spl.a2.sim.Warehouse;
-import bgu.spl.a2.sim.conf.ManufactoringPlan;
+import bgu.spl.a2.sim.conf.ManufacturingPlan;
 import bgu.spl.a2.sim.tools.Tool;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by Nirdun on 28.12.2016.
@@ -18,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class CreatePart extends Task<Product> {
 
     private Warehouse warehouse;
-    private final ManufactoringPlan plan;
+    private final ManufacturingPlan plan;
     private Product product;
     private boolean allToolsAvailable;
     private boolean allPartsAvailable;

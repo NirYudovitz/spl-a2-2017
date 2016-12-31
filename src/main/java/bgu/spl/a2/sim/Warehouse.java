@@ -1,8 +1,8 @@
 package bgu.spl.a2.sim;
 
+import bgu.spl.a2.sim.conf.ManufacturingPlan;
 import bgu.spl.a2.sim.tools.ToolsFactory;
 import bgu.spl.a2.sim.tools.Tool;
-import bgu.spl.a2.sim.conf.ManufactoringPlan;
 import bgu.spl.a2.Deferred;
 
 import java.util.HashMap;
@@ -24,7 +24,7 @@ public class Warehouse {
     private AtomicInteger amountOfScrewDrivers;
     private AtomicInteger amountOfHammers;
     private AtomicInteger amountOfPliers;
-    private Map<String, ManufactoringPlan> productPlansMap;
+    private Map<String, ManufacturingPlan> productPlansMap;
     private Map<String, AtomicInteger> amoutOfTool;
     private ConcurrentLinkedQueue<Deferred<Tool>> deferredScerawDriversWaitingResolve;
     private ConcurrentLinkedQueue<Deferred<Tool>> deferredHammersWaitingResolve;
@@ -122,19 +122,19 @@ public class Warehouse {
     /**
      * Getter for ManufactoringPlans
      *
-     * @param product - a string with the product name for which a ManufactoringPlan is desired
-     * @return A ManufactoringPlan for product
+     * @param product - a string with the product name for which a ManufacturingPlan is desired
+     * @return A ManufacturingPlan for product
      */
-    public ManufactoringPlan getPlan(String product) {
+    public ManufacturingPlan getPlan(String product) {
         return productPlansMap.get(product);
     }
 
     /**
-     * Store a ManufactoringPlan in the warehouse for later retrieval
+     * Store a ManufacturingPlan in the warehouse for later retrieval
      *
-     * @param plan - a ManufactoringPlan to be stored
+     * @param plan - a ManufacturingPlan to be stored
      */
-    public void addPlan(ManufactoringPlan plan) {
+    public void addPlan(ManufacturingPlan plan) {
         productPlansMap.put(plan.getProductName(), plan);
     }
 

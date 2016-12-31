@@ -6,7 +6,7 @@
 package bgu.spl.a2.sim;
 
 import bgu.spl.a2.*;
-import bgu.spl.a2.sim.conf.ManufactoringPlan;
+import bgu.spl.a2.sim.conf.ManufacturingPlan;
 import bgu.spl.a2.sim.tasks.CreateProduct;
 import bgu.spl.a2.sim.tools.ToolsFactory;
 
@@ -34,7 +34,7 @@ public class Simulator {
      * Should not be called before attachWorkStealingThreadPool()
      */
     public static ConcurrentLinkedQueue<Product> start() {
-        ConcurrentLinkedQueue<Product> manufactoredProducts = new ConcurrentLinkedQueue<>();
+        ConcurrentLinkedQueue<Product> manufacturedProducts = new ConcurrentLinkedQueue<>();
         threadPool.start();
         for (List<JsonWaves> jwave:waves){
             int totalProducts= 0;
@@ -69,7 +69,7 @@ public class Simulator {
             e.printStackTrace();
         }
 
-        return manufactoredProducts;
+        return manufacturedProducts;
     }
 
     public static void addToolsToWarehouse(List<JsonTools> jTools){
@@ -96,7 +96,7 @@ public class Simulator {
             String newProduct=jPlan.getProduct();
             String newParts[]=jPlan.getParts().toArray(new String[jPlan.getParts().size()]);
             String newTools[]=jPlan.getTools().toArray(new String[jPlan.getTools().size()]);
-            wareHouse.addPlan(new ManufactoringPlan(newProduct,newParts,newTools));
+            wareHouse.addPlan(new ManufacturingPlan(newProduct,newParts,newTools));
         }
     }
     public static void getWavesFromJson(List<List<JsonWaves>> waves){
