@@ -66,10 +66,7 @@ public class CreateProduct extends Task<Product> {
         AtomicLong sumOfUsage = new AtomicLong(0);
 
         if (numOfToolsNeeded.compareAndSet(0, 0)) {
-            for (Product subPart: product.getParts()){
-                sumOfUsage.addAndGet(subPart.getFinalId());
-            }
-            product.setFinalId(sumOfUsage.get());
+            product.setFinalId(product.getStartId());
             complete(product);
         } else {
             for (String tool : plan.getTools()) {

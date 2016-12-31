@@ -29,14 +29,39 @@ public class GcdScrewDriver implements Tool {
      * @return a long describing the result of tool use on Product package
      */
     @Override
-    public long useOn(Product p) {
-        long sumOfUsage = 0;
-        for (Product subPart : p.getParts()) {
-            BigInteger subPartID = BigInteger.valueOf(subPart.getFinalId());
-            long tempReverse = Long.reverse(subPart.getFinalId());
-            BigInteger reverseProductID = BigInteger.valueOf(tempReverse);
-            sumOfUsage += Math.abs(subPartID.gcd(reverseProductID).longValue());
+    public long useOn(Product p){
+        long value=0;
+        for(Product part : p.getParts()){
+            value+=Math.abs(func(part.getFinalId()));
+
         }
-        return sumOfUsage;
+        return value;
     }
+
+    public long func(long id){
+        BigInteger b1 = BigInteger.valueOf(id);
+        BigInteger b2 = BigInteger.valueOf(reverse(id));
+        long value= (b1.gcd(b2)).longValue();
+        return value;
+    }
+    public long reverse(long n){
+        long reverse=0;
+        while( n != 0 ){
+            reverse = reverse * 10;
+            reverse = reverse + n%10;
+            n = n/10;
+        }
+        return reverse;
+    }
+
+//    public long useOn(Product p) {
+//        long sumOfUsage = 0;
+//        for (Product subPart : p.getParts()) {
+//            BigInteger subPartID = BigInteger.valueOf(subPart.getFinalId());
+//            long tempReverse = Long.reverse(subPart.getFinalId());
+//            BigInteger reverseProductID = BigInteger.valueOf(tempReverse);
+//            sumOfUsage += Math.abs(subPartID.gcd(reverseProductID).longValue());
+//        }
+//        return sumOfUsage;
+//    }
 }

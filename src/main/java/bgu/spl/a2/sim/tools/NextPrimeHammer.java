@@ -29,12 +29,65 @@ public class NextPrimeHammer implements Tool {
      * @return a long describing the result of tool use on Product package
      */
     @Override
-    public long useOn(Product p) {
-        long sumOfUsage = 0;
-        for(Product subPart : p.getParts()) {
-            BigInteger partID = BigInteger.valueOf(subPart.getFinalId());
-            sumOfUsage += Math.abs(partID.nextProbablePrime().longValue());
+    public long useOn(Product p){
+        long value=0;
+        for(Product part : p.getParts()){
+            value+=Math.abs(func(part.getFinalId()));
+
         }
-        return sumOfUsage;
+        return value;
     }
+
+    public long func(long id) {
+
+        long v =id + 1;
+        while (!isPrime(v)) {
+            v++;
+        }
+
+        return v;
+    }
+    private boolean isPrime(long value) {
+        if(value < 2) return false;
+        if(value == 2) return true;
+        long sq = (long) Math.sqrt(value);
+        for (long i = 2; i <= sq; i++) {
+            if (value % i == 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+//    public long useOn(Product p) {
+//        long sumOfUsage = 0;
+//        for(Product subPart : p.getParts()) {
+//            BigInteger partID = BigInteger.valueOf(subPart.getFinalId());
+//            sumOfUsage += Math.abs(getNextPrime(partID.longValue()));
+//        }
+//        return sumOfUsage;
+//    }
+//    private Long getNextPrime(Long id){
+//        long v =id + 1;
+//        while (!isPrime(v)) {
+//            v++;
+//        }
+//
+//        return v;
+//        }
+//
+//    private boolean isPrime(long value) {
+//        if(value < 2) return false;
+//        if(value == 2) return true;
+//        long sq = (long) Math.sqrt(value);
+//        for (long i = 2; i <= sq; i++) {
+//            if (value % i == 0) {
+//                return false;
+//            }
+//        }
+//
+//        return true;
+//    }
 }

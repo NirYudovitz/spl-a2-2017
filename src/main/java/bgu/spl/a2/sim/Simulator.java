@@ -143,9 +143,11 @@ public class Simulator {
         //***** Creating a threadpool with the number of threads from the json file *****
         attachWorkStealingThreadPool(new WorkStealingThreadPool(jsonParser.getNumOfThreds()));
         ConcurrentLinkedQueue<Product> manufacturedProducts = Simulator.start();
+        String output = "";
         for (Product product : manufacturedProducts){
-            System.out.println(product.toString());
+            output += (product.toString());
         }
+        System.out.println(output);
 //        return 0; //todo main int
     }
 }
