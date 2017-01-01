@@ -23,8 +23,8 @@ public class MergeSort extends Task<int[]> {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        WorkStealingThreadPool pool = new WorkStealingThreadPool(4);
-        int n = 100; //you may check on different number of elements if you like
+        WorkStealingThreadPool pool = new WorkStealingThreadPool(10);
+        int n = 200000; //you may check on different number of elements if you like
         int[] array = new Random().ints(n).toArray();
 
         MergeSort task = new MergeSort(array);
@@ -34,16 +34,17 @@ public class MergeSort extends Task<int[]> {
         pool.submit(task);
         task.getResult().whenResolved(() -> {
             //warning - a large print!! - you can remove this line if you wish
-            System.out.println(Arrays.toString(task.getResult().get()));
-            System.out.println("Is sorted: " + IsSorted(task.getResult().get()));
+            //System.out.println(Arrays.toString(task.getResult().get()));
             l.countDown();
         });
 
         l.await();
         pool.shutdown();
+        String msg = isSorted(array)? "The array is sorted!" : "The arrat isn't sorted ):";
+        System.out.println(msg);
     }
 
-    private static boolean IsSorted(int[] array) {
+    private static boolean isSorted(int[] array) {
         for (int i = 0; i < array.length - 1; i++) {
             if (array[i] > array[i + 1])
                 return false;
@@ -54,57 +55,55 @@ public class MergeSort extends Task<int[]> {
 
     @Override
     protected void start() {
-        if (array.length > 1) {
+        if (array.length == 1) {
+            complete(array);
+        }
+        else{
             List<Task<int[]>> tasks = new ArrayList<>();
-            int center = array.length / 2;
-            Task<int[]> left = new MergeSort(Arrays.copyOfRange(array, 0, center));
-            Task<int[]> right = new MergeSort(Arrays.copyOfRange(array, center, array.length));
-
+            int middle = array.length / 2;
+            Task<int[]> left = new MergeSort(Arrays.copyOfRange(array, 0, middle));
+            Task<int[]> right = new MergeSort(Arrays.copyOfRange(array, middle, array.length));
             tasks.add(left);
             tasks.add(right);
-            spawn(left, right);
+            spawn(tasks.toArray(new Task<?>[tasks.size()]));
 
-            // Merge when children have finished sorting
             whenResolved(tasks, () -> {
+                //merge two sorted children and complete
                 merge(left.getResult().get(), right.getResult().get());
-
-                // Call complete on sorted array
                 complete(array);
             });
-        } else {
-            // Call complete on a single cell array
-            complete(array);
         }
     }
 
     /**
      * Merge two sorted arrays to a single sorted array
      *
-     * @param sortedArr1 First sorted array
-     * @param sortedArr2 Second sorted array
+     * @param firstSortedArray First sorted array
+     * @param secondSortedArray Second sorted array
      */
-    private void merge(int[] sortedArr1, int[] sortedArr2) {
-        int arr1 = 0;
-        int arr2 = 0;
-        int orgIndex = 0;
+    private void merge(int[] firstSortedArray, int[] secondSortedArray) {
+        int firstArrayIndx = 0;
+        int secondArrayIndx = 0;
+        int originalArrayIndx = 0;
 
         // Override original array with same values but sorted
-        while (arr1 < sortedArr1.length && arr2 < sortedArr2.length) {
-            if (sortedArr1[arr1] <= sortedArr2[arr2]) {
-                array[orgIndex++] = sortedArr1[arr1++];
+        while (firstArrayIndx < firstSortedArray.length && secondArrayIndx < secondSortedArray.length) {
+            if (firstSortedArray[firstArrayIndx] <= secondSortedArray[secondArrayIndx]) {
+                array[originalArrayIndx] = firstSortedArray[firstArrayIndx];
+                firstArrayIndx ++;
             } else {
-                array[orgIndex++] = sortedArr2[arr2++];
+                array[originalArrayIndx] = secondSortedArray[secondArrayIndx];
+                secondArrayIndx ++;
             }
+            originalArrayIndx ++;
         }
 
         // Copy rest of arr1
-        while (arr1 < sortedArr1.length) {
-            array[orgIndex++] = sortedArr1[arr1++];
-        }
+        System.arraycopy(firstSortedArray, firstArrayIndx, array, originalArrayIndx,
+                        firstSortedArray.length - firstArrayIndx);
 
         // Copy rest of arr2
-        while (arr2 < sortedArr2.length) {
-            array[orgIndex++] = sortedArr2[arr2++];
-        }
+        System.arraycopy(secondSortedArray, secondArrayIndx, array, originalArrayIndx,
+                secondSortedArray.length - secondArrayIndx);
     }
 }

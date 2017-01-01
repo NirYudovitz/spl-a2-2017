@@ -38,7 +38,7 @@ public class NextPrimeHammer implements Tool {
         return value;
     }
 
-    public long func(long id) {
+    private long func(long id) {
 
         long v =id + 1;
         while (!isPrime(v)) {
