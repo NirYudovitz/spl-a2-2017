@@ -38,13 +38,13 @@ public class GcdScrewDriver implements Tool {
         return value;
     }
 
-    public long func(long id){
+    private long func(long id){
         BigInteger b1 = BigInteger.valueOf(id);
         BigInteger b2 = BigInteger.valueOf(reverse(id));
         long value= (b1.gcd(b2)).longValue();
         return value;
     }
-    public long reverse(long n){
+    private long reverse(long n){
         long reverse=0;
         while( n != 0 ){
             reverse = reverse * 10;

@@ -37,7 +37,7 @@ public class RandomSumPliers implements Tool {
         return value;
     }
 
-    public long func(long id){
+    private long func(long id){
         Random r = new Random(id);
         long  sum = 0;
         for (long i = 0; i < id % 10000; i++) {
