@@ -10,6 +10,8 @@ import bgu.spl.a2.sim.conf.ManufacturingPlan;
 import bgu.spl.a2.sim.tasks.CreateProduct;
 import bgu.spl.a2.sim.tools.ToolsFactory;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -139,6 +141,8 @@ public class Simulator {
         JsonParser jsonParser = new JsonParser();
         jsonParser.parse(args);
 
+
+
         // ***** Adding parts and plans to the warehouse *****
         Simulator.addToolsToWarehouse(jsonParser.getTools());
         Simulator.addPlansToWarehouse(jsonParser.getPlans());
@@ -149,11 +153,18 @@ public class Simulator {
         //***** Creating a threadpool with the number of threads from the json file *****
         attachWorkStealingThreadPool(new WorkStealingThreadPool(jsonParser.getNumOfThreds()));
         ConcurrentLinkedQueue<Product> manufacturedProducts = Simulator.start();
-        String output = "";
-        for (Product product : manufacturedProducts){
-            output += (product.toString());
+        try{
+            FileOutputStream fout = new FileOutputStream("result.ser");
+            ObjectOutputStream oos = new ObjectOutputStream(fout);
+            oos.writeObject(manufacturedProducts);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        System.out.println(output);
+//        String output = "";
+//        for (Product product : manufacturedProducts){
+//            output += (product.toString());
+//        }
+//        System.out.println(output);
 //        return 0; //todo main int
     }
 }

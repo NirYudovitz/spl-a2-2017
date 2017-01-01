@@ -21,9 +21,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * only be private!!
  */
 public class Warehouse {
-    private AtomicInteger amountOfScrewDrivers;
-    private AtomicInteger amountOfHammers;
-    private AtomicInteger amountOfPliers;
     private Map<String, ManufacturingPlan> productPlansMap;
     private Map<String, AtomicInteger> amoutOfTool;
     private ConcurrentLinkedQueue<Deferred<Tool>> deferredScerawDriversWaitingResolve;
@@ -34,10 +31,6 @@ public class Warehouse {
      * Constructor
      */
     public Warehouse() {
-        // TODO: 26/12/2016 maybe use concurrent deque or something...
-        amountOfScrewDrivers = new AtomicInteger(0);
-        amountOfHammers = new AtomicInteger(0);
-        amountOfPliers = new AtomicInteger(0);
         productPlansMap = new HashMap<>();
         amoutOfTool = new HashMap<String, AtomicInteger>() {{
             put("gs-driver", new AtomicInteger(0));

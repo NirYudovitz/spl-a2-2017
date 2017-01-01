@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * A class that represents a product produced during the simulation
  */
-public class Product {
+public class Product implements java.io.Serializable{
     private final long startId;
     private AtomicLong currentId;
     private String name;

@@ -153,7 +153,7 @@ public class WorkStealingThreadPool {
      * @param to   is the id of the processor that steal.
      * @return false if there is no more task to steal , true if steal was success.
      */
-    private boolean steal(int to, int from) {
+    private synchronized boolean steal(int to, int from) {
             Task<?> taskToSteal = tasksQueues[from].pollLast();
             if (taskToSteal != null) {
                 return tasksQueues[to].add(taskToSteal);

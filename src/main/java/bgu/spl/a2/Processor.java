@@ -62,6 +62,7 @@ public class Processor implements Runnable {
                     try {
                         pool.getVersionMonitor().await(pool.getVersionMonitor().getVersion());
                     } catch (InterruptedException ix) {
+                        System.out.println(Thread.currentThread().getId()+" is wake now");
                         //continue loop.
                     }
                 }

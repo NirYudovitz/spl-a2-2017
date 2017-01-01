@@ -62,6 +62,7 @@ public abstract class Task<R> {
     protected final void spawn(Task<?>... task) {
         processor.addTasks(task);
     }
+    //todo sync? sagie
 
     /**
      * add a callback to be executed once *all* the given tasks results are
