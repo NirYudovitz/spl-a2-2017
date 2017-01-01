@@ -5,6 +5,7 @@ import sun.awt.windows.ThemeReader;
 import java.util.Deque;
 import java.util.Queue;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * this class represents a single work stealing processor, it is
@@ -17,7 +18,7 @@ import java.util.Stack;
  * methods
  */
 public class Processor implements Runnable {
-
+    AtomicBoolean isShutdown;
     private final WorkStealingThreadPool pool;
     private final int id;
 
@@ -38,6 +39,8 @@ public class Processor implements Runnable {
      * @param pool - the thread pool which owns this processor
      */
     /*package*/ Processor(int id, WorkStealingThreadPool pool) {
+        isShutdown = new AtomicBoolean(false);
+        isShutdown = new AtomicBoolean(false);
         this.id = id;
         this.pool = pool;
     }
@@ -45,7 +48,7 @@ public class Processor implements Runnable {
     @Override
     public void run() {
         //todo handle while
-        while (!Thread.currentThread().isInterrupted()) {
+        while (!isShutdown.get()) {
             if (pool.haveTasks(id)) {
                 Task t = pool.getNextTask(id);
                 // Check if stolen.
@@ -59,8 +62,6 @@ public class Processor implements Runnable {
                     try {
                         pool.getVersionMonitor().await(pool.getVersionMonitor().getVersion());
                     } catch (InterruptedException ix) {
-                        System.out.println("in InterruptedException");
-                        Thread.currentThread().interrupt();
                         //continue loop.
                     }
                 }

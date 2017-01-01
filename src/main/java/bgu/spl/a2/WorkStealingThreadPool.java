@@ -16,6 +16,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 public class WorkStealingThreadPool {
     private ConcurrentLinkedDeque<Task<?>>[] tasksQueues;
+    private Processor[] ProcessorsArr;
     private Thread[] threadsArr;
     private int nthreads;
     private VersionMonitor verMonitor;
@@ -37,9 +38,11 @@ public class WorkStealingThreadPool {
         tasksQueues = new ConcurrentLinkedDeque[nthreads];
         threadsArr = new Thread[nthreads];
         verMonitor = new VersionMonitor();
+        ProcessorsArr = new Processor[nthreads];
         //Todo initialize
         for (int j = 0; j < nthreads; j++) {
-            threadsArr[j] = new Thread(new Processor(j, this));
+            ProcessorsArr[j] = new Processor(j, this);
+            threadsArr[j] = new Thread(ProcessorsArr[j]);
             tasksQueues[j] = new ConcurrentLinkedDeque<>();
         }
 
@@ -70,11 +73,15 @@ public class WorkStealingThreadPool {
      *                                       shutdown the queue is itself a processor of this queue
      */
     public void shutdown() throws InterruptedException {
+        int i = 0;
         for (Thread t : threadsArr) {
             if (Thread.currentThread().getId() == t.getId()) {
                 throw new UnsupportedOperationException();
             }
+            ProcessorsArr[i].isShutdown.set(true);
             t.interrupt();
+//            t.join();
+            i++;
         }
         //todo something with that function- join ?
 
@@ -147,12 +154,10 @@ public class WorkStealingThreadPool {
      * @return false if there is no more task to steal , true if steal was success.
      */
     private boolean steal(int to, int from) {
-        synchronized (this) {
             Task<?> taskToSteal = tasksQueues[from].pollLast();
             if (taskToSteal != null) {
                 return tasksQueues[to].add(taskToSteal);
             }
-        }
         return false;
     }
 

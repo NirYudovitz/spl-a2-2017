@@ -45,8 +45,8 @@ public class Warehouse {
             put("rs-pliers", new AtomicInteger(0));
         }};
         deferredHammersWaitingResolve = new ConcurrentLinkedQueue<>();
-        deferredHammersWaitingResolve = new ConcurrentLinkedQueue<>();
-        deferredHammersWaitingResolve = new ConcurrentLinkedQueue<>();
+        deferredScerawDriversWaitingResolve = new ConcurrentLinkedQueue<>();
+        deferredPliersWaitingResolve = new ConcurrentLinkedQueue<>();
     }
 
 
@@ -57,7 +57,7 @@ public class Warehouse {
      * @param type - string describing the required tool
      * @return a deferred promise for the  requested tool
      */
-    public Deferred<Tool> acquireTool(String type) {
+    public synchronized Deferred<Tool> acquireTool(String type) {
         // TODO: 26/12/2016 think on some smarter way to do this
         // TODO: 26/12/2016 handle catch
         // TODO: 26/12/2016 try without sync
@@ -114,9 +114,9 @@ public class Warehouse {
      *
      * @param tool - The tool to be returned
      */
-    public void releaseTool(Tool tool) {
+    public synchronized void releaseTool(Tool tool) {
         // TODO: 26/12/2016 maybe sync?
-        amoutOfTool.get(tool.getType()).incrementAndGet();
+            amoutOfTool.get(tool.getType()).incrementAndGet();
     }
 
     /**

@@ -10,6 +10,7 @@ import bgu.spl.a2.sim.conf.ManufacturingPlan;
 import bgu.spl.a2.sim.tasks.CreateProduct;
 import bgu.spl.a2.sim.tools.ToolsFactory;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -45,6 +46,9 @@ public class Simulator {
 
                 totalProducts += jwave.get(i).getQty();
             }
+            Product[] waveProducts=new Product[totalProducts];
+            int numOfProductsToPrint=totalProducts-1;
+            int orderPrint=totalProducts;
             CountDownLatch countDownLatch = new CountDownLatch(totalProducts);
             //System.out.println("the length of the wave is: " + jwave.size());
             for(JsonWaves wave:jwave) {
@@ -53,7 +57,7 @@ public class Simulator {
 
                 for (int i=0; i<wave.getQty(); i++){
 
-                    Product product = new Product(wave.getStartId() + i, wave.getProduct());
+                    Product product = new Product(wave.getStartId() + i, wave.getProduct(),--orderPrint);
                     //System.out.println("starting task" + wave.getProduct());
                     Task<Product> task = new CreateProduct(product, wareHouse);
                     String name = product.getName();
@@ -62,7 +66,8 @@ public class Simulator {
                         //System.out.print("created a: " + name + " changing count to: ");
                         //System.out.println(countDownLatch.getCount());
                         countDownLatch.countDown();
-                        manufacturedProducts.add(product);
+                        waveProducts[numOfProductsToPrint-product.getOrderToPrint()]=product;
+//                        manufacturedProducts.add(product);
                     });
                 }
             }
@@ -75,6 +80,7 @@ public class Simulator {
                 e.printStackTrace();
             }
             j++;
+            manufacturedProducts.addAll(Arrays.asList(waveProducts));
         }
         try {
             threadPool.shutdown();

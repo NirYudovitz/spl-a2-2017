@@ -13,6 +13,12 @@ public class Product {
     private String name;
     private List<Product> partList;
 
+    public int getOrderToPrint() {
+        return orderToPrint;
+    }
+
+    private int orderToPrint;
+
     /**
      * Constructor
      *
@@ -21,9 +27,18 @@ public class Product {
      */
     public Product(long startId, String name) {
         this.startId = startId;
-        this.currentId = new AtomicLong(startId);
+        this.currentId = new AtomicLong(0);
         this.name = name;
         partList = new LinkedList<>();
+        this.orderToPrint = -1;
+    }
+
+    public Product(long startId, String name, int orderPrint) {
+        this.startId = startId;
+        this.currentId = new AtomicLong(0);
+        this.name = name;
+        partList = new LinkedList<>();
+        this.orderToPrint = orderPrint;
     }
 
     /**
@@ -72,7 +87,7 @@ public class Product {
     @Override
     public String toString() {
         String toString = "";
-        for (Product subPart:getParts()) {
+        for (Product subPart : getParts()) {
             toString += subPart.toString();
         }
         return "ProductName: " + getName() + " Product Id = " + getFinalId() + "\nPartsList {\n" + toString + "}\n";
