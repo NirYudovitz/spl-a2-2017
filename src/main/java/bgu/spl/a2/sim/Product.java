@@ -90,6 +90,6 @@ public class Product {
         for (Product subPart : getParts()) {
             toString += subPart.toString();
         }
-        return "ProductName: " + getName() + " Product Id = " + getFinalId() + "\nPartsList {\n" + toString + "}\n";
+        return "ProductName: " + getName() + "  Product Id = " + getFinalId() + "\nPartsList {\n" + toString + "}\n";
     }
 }
