@@ -40,7 +40,6 @@ public class WorkStealingThreadPool {
         threadsArr = new Thread[nthreads];
         verMonitor = new VersionMonitor();
         ProcessorsArr = new Processor[nthreads];
-        //Todo initialize
         for (int j = 0; j < nthreads; j++) {
             ProcessorsArr[j] = new Processor(j, this);
             threadsArr[j] = new Thread(ProcessorsArr[j]);
@@ -74,15 +73,14 @@ public class WorkStealingThreadPool {
      *                                       shutdown the queue is itself a processor of this queue
      */
     public void shutdown() throws InterruptedException {
-        int i = 0;
+        int id = 0;
         for (Thread t : threadsArr) {
             if (Thread.currentThread().getId() == t.getId()) {
                 throw new UnsupportedOperationException();
             }
-            ProcessorsArr[i].isShutdown.set(true);
+            ProcessorsArr[id].isWorking.set(false);
             t.interrupt();
-//            t.join();
-            i++;
+            id++;
         }
         for (Thread t : threadsArr) {
             if (Thread.currentThread().getId() == t.getId()) {
@@ -90,10 +88,7 @@ public class WorkStealingThreadPool {
             }
             t.join();
         }
-        //todo something with that function- join ?
-
     }
-
     /**
      * start the threads belongs to this thread pool
      */

@@ -69,7 +69,6 @@ public class Deferred<T> {
             result = value;
             for (Runnable callback : callBacks) {
                 callback.run();
-                // TODO: should be deleted from list?
             }
         } else {
             throw new IllegalStateException("already resolved.");
@@ -91,7 +90,6 @@ public class Deferred<T> {
      *                 resolved
      */
     public synchronized void whenResolved(Runnable callback) {
-        // TODO: how to handle the "Note" (leak and more then one issue)
         if (isResolved) {
             callback.run();
         } else {

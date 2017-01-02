@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * methods
  */
 public class Processor implements Runnable {
-    AtomicBoolean isShutdown;
+    AtomicBoolean isWorking;
     private final WorkStealingThreadPool pool;
     private final int id;
 
@@ -39,8 +39,7 @@ public class Processor implements Runnable {
      * @param pool - the thread pool which owns this processor
      */
     /*package*/ Processor(int id, WorkStealingThreadPool pool) {
-        isShutdown = new AtomicBoolean(false);
-        isShutdown = new AtomicBoolean(false);
+        isWorking = new AtomicBoolean(true);
         this.id = id;
         this.pool = pool;
     }
@@ -53,7 +52,7 @@ public class Processor implements Runnable {
      */
     @Override
     public void run() {
-        while (!isShutdown.get()) {
+        while (isWorking.get()) {
             if (pool.haveTasks(id)) {
                 Task t = pool.getNextTask(id);
                 // Check if stolen.

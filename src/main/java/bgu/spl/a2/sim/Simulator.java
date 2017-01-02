@@ -47,7 +47,6 @@ public class Simulator {
     public static ConcurrentLinkedQueue<Product> start() {
         ConcurrentLinkedQueue<Product> manufacturedProducts = new ConcurrentLinkedQueue<>();
         threadPool.start();
-        int j = 0;
 
         // going over the waves.
         for (List<JsonWaves> jwave : waves) {
@@ -68,7 +67,6 @@ public class Simulator {
             int orderPrint = totalProducts;
             // represents the number of tools that need to be finish before going to next wave.
             CountDownLatch countDownLatch = new CountDownLatch(totalProducts);
-
             //going over products and create them.
             for (JsonWaves wave : jwave) {
                 //going over number of product according to quantity.
@@ -81,8 +79,8 @@ public class Simulator {
 
                     // when product is ready to be finish/
                     task.getResult().whenResolved(() -> {
-                        countDownLatch.countDown();
                         waveProducts[numOfProductsToPrint - product.getOrderToPrint()] = product;
+                        countDownLatch.countDown();
                     });
                 }
             }
@@ -92,7 +90,6 @@ public class Simulator {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            j++;
             manufacturedProducts.addAll(Arrays.asList(waveProducts));
         }
         try {
@@ -170,20 +167,21 @@ public class Simulator {
         attachWorkStealingThreadPool(new WorkStealingThreadPool(jsonParser.getNumOfThreds()));
         ConcurrentLinkedQueue<Product> manufacturedProducts = Simulator.start();
 
+
         //creating ser file and write products object into file.
-        ObjectOutputStream oos=null ;
-        FileOutputStream fout=null;
+        ObjectOutputStream oos = null;
+        FileOutputStream fout = null;
         try {
             fout = new FileOutputStream("result.ser");
             oos = new ObjectOutputStream(fout);
             oos.writeObject(manufacturedProducts);
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 fout.close();
                 oos.close();
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
