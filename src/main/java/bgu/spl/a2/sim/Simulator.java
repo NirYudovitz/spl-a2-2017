@@ -171,12 +171,22 @@ public class Simulator {
         ConcurrentLinkedQueue<Product> manufacturedProducts = Simulator.start();
 
         //creating ser file and write products object into file.
+        ObjectOutputStream oos=null ;
+        FileOutputStream fout=null;
         try {
-            FileOutputStream fout = new FileOutputStream("result.ser");
-            ObjectOutputStream oos = new ObjectOutputStream(fout);
+            fout = new FileOutputStream("result.ser");
+            oos = new ObjectOutputStream(fout);
             oos.writeObject(manufacturedProducts);
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            try {
+                fout.close();
+                oos.close();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
         }
     }
 }

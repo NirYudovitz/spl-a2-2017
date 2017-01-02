@@ -3,6 +3,7 @@ package bgu.spl.a2;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * represents a work stealing thread pool - to understand what this class does
@@ -115,6 +116,7 @@ public class WorkStealingThreadPool {
     public boolean stealTasks(int id) {
         boolean stolen = false;
         int counter = 1;
+        AtomicInteger currentVerMonitor = new AtomicInteger(verMonitor.getVersion());
         while (!stolen) {
             int currentIdProc = (id + counter) % nthreads;
             if (!(tasksQueues[currentIdProc].isEmpty())) {
@@ -136,6 +138,10 @@ public class WorkStealingThreadPool {
             }
             counter++;
             if (counter == tasksQueues.length) {
+                if (!(currentVerMonitor.get() == verMonitor.getVersion())) {
+                    counter = 1;
+                    continue;
+                }
                 break;
             }
 
@@ -144,6 +150,10 @@ public class WorkStealingThreadPool {
 
     }
 
+    /**
+     * @param id is the id of proccesor to check if have tasks.
+     * @return True if the proccessor have tasks,False otherwise.
+     */
     public boolean haveTasks(int id) {
         return !(tasksQueues[id].isEmpty());
     }
@@ -154,13 +164,19 @@ public class WorkStealingThreadPool {
      * @return false if there is no more task to steal , true if steal was success.
      */
     private synchronized boolean steal(int to, int from) {
-            Task<?> taskToSteal = tasksQueues[from].pollLast();
-            if (taskToSteal != null) {
-                return tasksQueues[to].add(taskToSteal);
-            }
+        Task<?> taskToSteal = tasksQueues[from].pollLast();
+        if (taskToSteal != null) {
+            return tasksQueues[to].add(taskToSteal);
+        }
         return false;
     }
 
+    /**
+     * adding tasks to proccessor.
+     *
+     * @param id   is the id of proccesor to check if have tasks.
+     * @param task is the tasks to be added to proccessor.
+     */
     public void addTasksToProcessor(int id, Task<?>... task) {
         for (Task<?> t : task) {
             tasksQueues[id].add(t);
@@ -168,6 +184,12 @@ public class WorkStealingThreadPool {
         verMonitor.inc();
     }
 
+    /**
+     * adding one task to proccessor.
+     *
+     * @param id   is the id of proccesor to check if have tasks.
+     * @param task is the task to be added to proccessor.
+     */
     public void addOneTaskToProcessor(int id, Task<?> task) {
         tasksQueues[id].add(task);
         verMonitor.inc();
