@@ -1,7 +1,6 @@
 package bgu.spl.a2;
 
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -89,6 +88,7 @@ public class WorkStealingThreadPool {
             t.join();
         }
     }
+
     /**
      * start the threads belongs to this thread pool
      */
@@ -196,6 +196,9 @@ public class WorkStealingThreadPool {
         verMonitor.inc();
     }
 
+    /**
+     * @return the current version monitor of the pool.
+     */
     public VersionMonitor getVersionMonitor() {
         return verMonitor;
     }

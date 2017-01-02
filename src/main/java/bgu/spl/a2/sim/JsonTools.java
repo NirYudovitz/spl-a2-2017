@@ -13,20 +13,17 @@ public class JsonTools {
     @Expose
     private Integer qty;
 
+    /**
+     * @return String represent tool.
+     */
     public String getTool() {
         return tool;
     }
 
-    public void setTool(String tool) {
-        this.tool = tool;
-    }
-
+    /**
+     * @return the quantity of products to be produce.
+     */
     public Integer getQty() {
         return qty;
     }
-
-    public void setQty(Integer qty) {
-        this.qty = qty;
-    }
-
 }

@@ -29,13 +29,6 @@ public class JsonPlans {
     }
 
     /**
-     * @param product is the name of the product(String) to be set.
-     */
-    public void setProduct(String product) {
-        this.product = product;
-    }
-
-    /**
      * @return List of strings represents the tools in the plan.
      */
     public List<String> getTools() {
@@ -43,24 +36,10 @@ public class JsonPlans {
     }
 
     /**
-     * @param tools is a List of string represents name of tools to be set to plan.
-     */
-    public void setTools(List<String> tools) {
-        this.tools = tools;
-    }
-
-    /**
      * @return List pf string represents name of parts.
      */
     public List<String> getParts() {
         return parts;
-    }
-
-    /**
-     * @param parts is a List of string represents name of parts to be set to plan.
-     */
-    public void setParts(List<String> parts) {
-        this.parts = parts;
     }
 
 }

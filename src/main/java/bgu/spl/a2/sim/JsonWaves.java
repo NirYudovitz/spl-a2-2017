@@ -28,26 +28,11 @@ public class JsonWaves {
     }
 
     /**
-     * @param product is string represent product to be set.
-     */
-    public void setProduct(String product) {
-        this.product = product;
-    }
-
-    /**
      * @return number of products .
      */
     public Integer getQty() {
         return qty;
     }
-
-    /**
-     * @param qty is number of products to be set.
-     */
-    public void setQty(Integer qty) {
-        this.qty = qty;
-    }
-
     /**
      * getting the stard is of a product.
      *
@@ -55,13 +40,6 @@ public class JsonWaves {
      */
     public long getStartId() {
         return startId;
-    }
-
-    /**
-     * @param startId is the id to set to start id of product.
-     */
-    public void setStartId(long startId) {
-        this.startId = startId;
     }
 
 }

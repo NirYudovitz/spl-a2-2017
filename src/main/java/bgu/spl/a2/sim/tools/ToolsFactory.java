@@ -1,10 +1,5 @@
 package bgu.spl.a2.sim.tools;
 
-import bgu.spl.a2.sim.tools.GcdScrewDriver;
-import bgu.spl.a2.sim.tools.NextPrimeHammer;
-import bgu.spl.a2.sim.tools.RandomSumPliers;
-import bgu.spl.a2.sim.tools.Tool;
-
 /**
  * Represent ToolsFactory class
  * Tool factory is a class the manage to get type of tool as String to create and create this tool.

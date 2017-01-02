@@ -2,8 +2,6 @@ package bgu.spl.a2.sim.tools;
 
 import bgu.spl.a2.sim.Product;
 
-import java.math.BigInteger;
-
 /**
  * A class represents a tool of type NextPrimeHammer
  */
@@ -58,7 +56,7 @@ public class NextPrimeHammer implements Tool {
     }
 
     /**
-     * @param value
+     * @param value is the value to check if is prime.
      * @return true if the recieved value is a prime number
      * false otherwise
      */

@@ -43,8 +43,13 @@ public class VersionMonitor {
         notifyAll();
     }
 
+    /**
+     * Wait as long as parameter version matches current version
+     *
+     * @param version is the version to compare to current version.
+     * @throws InterruptedException
+     */
     public synchronized void await(int version) throws InterruptedException {
-        // Wait as long as parameter version matches current version
         while (getVersion() == version) {
             wait();
         }

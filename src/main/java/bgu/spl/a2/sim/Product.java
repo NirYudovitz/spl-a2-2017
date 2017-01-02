@@ -55,7 +55,7 @@ public class Product implements java.io.Serializable {
     }
 
     /**
-     * @return The product name as a string/
+     * @return The product name as a string.
      */
     public String getName() {
         return name;
