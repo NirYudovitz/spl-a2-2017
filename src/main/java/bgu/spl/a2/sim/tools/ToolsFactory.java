@@ -5,12 +5,19 @@ import bgu.spl.a2.sim.tools.NextPrimeHammer;
 import bgu.spl.a2.sim.tools.RandomSumPliers;
 import bgu.spl.a2.sim.tools.Tool;
 
-
 /**
- * Created by Nirdun on 28.12.2016.
+ * Represent ToolsFactory class
+ * Tool factory is a class the manage to get type of tool as String to create and create this tool.
  */
 public class ToolsFactory {
-    public static Tool createTool(String type){
+
+    /**
+     * getting a type of tool as String to create and return this tool.
+     *
+     * @param type is a String represent tool.
+     * @return new Tool according to input.
+     */
+    public static Tool createTool(String type) {
         Tool newTool;
         switch (type) {
             case "gs-driver":
@@ -23,7 +30,7 @@ public class ToolsFactory {
                 newTool = new RandomSumPliers();
                 break;
             default:
-                newTool= null;
+                newTool = null;
         }
         return newTool;
     }
