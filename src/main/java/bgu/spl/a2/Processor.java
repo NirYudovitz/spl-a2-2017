@@ -49,7 +49,7 @@ public class Processor implements Runnable {
     public void run() {
         while (isWorking.get()) {
             if (pool.haveTasks(id)) {
-                Task t = pool.getNextTask(id);
+                Task<?> t = pool.getNextTask(id);
                 // Check if stolen.
                 if (t != null) {
                     t.handle(this);

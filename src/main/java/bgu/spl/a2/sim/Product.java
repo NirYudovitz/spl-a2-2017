@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * A class that represents a product produced during the simulation
  */
 public class Product implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     // represent the start id of product.
     private final long startId;
     // represent id after changes.

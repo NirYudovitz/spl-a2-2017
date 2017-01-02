@@ -25,16 +25,24 @@ public class Warehouse {
      */
     public Warehouse() {
         productPlansMap = new HashMap<>();
-        amoutOfTool = new HashMap<String, AtomicInteger>() {{
-            put("gs-driver", new AtomicInteger(0));
-            put("np-hammer", new AtomicInteger(0));
-            put("rs-pliers", new AtomicInteger(0));
-        }};
-        defferedWaitingResolve = new HashMap<String, ConcurrentLinkedQueue<Deferred<Tool>>>() {{
-            put("gs-driver", new ConcurrentLinkedQueue<>());
-            put("np-hammer", new ConcurrentLinkedQueue<>());
-            put("rs-pliers", new ConcurrentLinkedQueue<>());
-        }};
+        amoutOfTool = new HashMap<String, AtomicInteger>() {
+            private static final long serialVersionUID = -8757982737517556950L;
+
+            {
+                put("gs-driver", new AtomicInteger(0));
+                put("np-hammer", new AtomicInteger(0));
+                put("rs-pliers", new AtomicInteger(0));
+            }
+        };
+        defferedWaitingResolve = new HashMap<String, ConcurrentLinkedQueue<Deferred<Tool>>>() {
+            private static final long serialVersionUID = 9036629835789347283L;
+
+            {
+                put("gs-driver", new ConcurrentLinkedQueue<>());
+                put("np-hammer", new ConcurrentLinkedQueue<>());
+                put("rs-pliers", new ConcurrentLinkedQueue<>());
+            }
+        };
     }
 
     /**

@@ -99,9 +99,7 @@ public class WorkStealingThreadPool {
     }
 
     public Task<?> getNextTask(int id) {
-        synchronized (this) {
             return (tasksQueues[id].pollFirst());
-        }
     }
 
     /**

@@ -74,7 +74,6 @@ public class Simulator {
                     //creating new product and stting order to print.
                     Product product = new Product(wave.getStartId() + i, wave.getProduct(), --orderPrint);
                     Task<Product> task = new CreateProduct(product, wareHouse);
-                    String name = product.getName();
                     threadPool.submit(task);
 
                     // when product is ready to be finish/
@@ -165,6 +164,7 @@ public class Simulator {
         attachWorkStealingThreadPool(new WorkStealingThreadPool(jsonParser.getNumOfThreds()));
         ConcurrentLinkedQueue<Product> manufacturedProducts = Simulator.start();
 
+        System.out.println(manufacturedProducts.size());
 
         //creating ser file and write products object into file.
         ObjectOutputStream oos = null;
