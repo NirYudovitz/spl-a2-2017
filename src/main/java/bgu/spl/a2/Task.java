@@ -16,8 +16,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public abstract class Task<R> {
     private Deferred<R> defer = new Deferred<>();
-    Processor processor;
-    Runnable taskCallback;
+    private Processor processor;
+    private Runnable taskCallback;
 
     /**
      * start handling the task - note that this method is protected, a handler
@@ -49,8 +49,6 @@ public abstract class Task<R> {
         } else {
             taskCallback.run();
         }
-
-
     }
 
     /**
@@ -62,7 +60,6 @@ public abstract class Task<R> {
     protected synchronized final void spawn(Task<?>... task) {
         processor.addTasks(task);
     }
-    //todo sync? sagie
 
     /**
      * add a callback to be executed once *all* the given tasks results are

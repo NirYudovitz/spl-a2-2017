@@ -19,12 +19,25 @@ import java.util.concurrent.atomic.AtomicInteger;
  * methods
  */
 public class VersionMonitor {
-    private AtomicInteger monitorCount = new AtomicInteger(0);
+    private AtomicInteger monitorCount;
 
+    /**
+     * VersionMonitor C-tor
+     */
+    public VersionMonitor() {
+        monitorCount = new AtomicInteger(0);
+    }
+
+    /**
+     * @return returns the current version monitor number
+     */
     public int getVersion() {
         return monitorCount.get();
     }
 
+    /**
+     * increment the version monitor by one and notify all waiting threads
+     */
     public synchronized void inc() {
         monitorCount.addAndGet(1);
         notifyAll();
@@ -34,15 +47,6 @@ public class VersionMonitor {
         // Wait as long as parameter version matches current version
         while (getVersion() == version) {
             wait();
-          //  System.out.println(Thread.currentThread().getId()+" Is going to Sleep");
-
-//            if(Thread.currentThread().isInterrupted()){
-//                throw new InterruptedException();
-//            }
         }
-       // System.out.println(Thread.currentThread().getId()+" is wake now");
-
     }
-
-
 }

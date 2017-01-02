@@ -45,9 +45,14 @@ public class Processor implements Runnable {
         this.pool = pool;
     }
 
+    /**
+     * checks if tasks are available:
+     * if so - handle them
+     * if not - try to steal from the other processors
+     * if can't steal - go to sleep until new tasks are available
+     */
     @Override
     public void run() {
-        //todo handle while
         while (!isShutdown.get()) {
             if (pool.haveTasks(id)) {
                 Task t = pool.getNextTask(id);
@@ -55,14 +60,12 @@ public class Processor implements Runnable {
                 if (t != null) {
                     t.handle(this);
                 }
-                //todo null pointer from ger next teask
             } else {
                 boolean successSteal = pool.stealTasks(id);
                 if (!successSteal) {
                     try {
                         pool.getVersionMonitor().await(pool.getVersionMonitor().getVersion());
                     } catch (InterruptedException ix) {
-                  //      System.out.println(Thread.currentThread().getId()+" is wake now");
                         //continue loop.
                     }
                 }
@@ -71,14 +74,23 @@ public class Processor implements Runnable {
 
     }
 
+    /**
+     * add a collection of Tasks to the current processor
+     *
+     * @param task - tasks to be added to the processor
+     */
     public void addTasks(Task<?>... task) {
         pool.addTasksToProcessor(id, task);
     }
 
+    /**
+     * add a single task to the current processor
+     *
+     * @param task - a task to be added to the processor
+     */
     public void addOneTask(Task<?> task) {
         pool.addOneTaskToProcessor(id, task);
     }
-
 
 
 }
