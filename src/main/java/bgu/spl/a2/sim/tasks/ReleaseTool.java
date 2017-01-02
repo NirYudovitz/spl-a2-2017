@@ -4,17 +4,18 @@ import bgu.spl.a2.Deferred;
 import bgu.spl.a2.Processor;
 import bgu.spl.a2.Task;
 import bgu.spl.a2.sim.Product;
+import bgu.spl.a2.sim.Warehouse;
 import bgu.spl.a2.sim.tools.Tool;
 
 /**
  * Created by Nir1612 on 28/12/2016.
  */
-public class UseTool extends Task<Deferred<Tool>>{
-    private Product product;
+public class ReleaseTool extends Task<Deferred<Tool>>{
+    private Warehouse warehouse;
     private Deferred<Tool>  deferredTool;
 
-    public UseTool(Product product, Deferred<Tool> deferredTool) {
-        this.product = product;
+    public ReleaseTool(Warehouse warehouse, Deferred<Tool> deferredTool) {
+        this.warehouse=warehouse;
         this.deferredTool = deferredTool;
     }
 
@@ -25,6 +26,8 @@ public class UseTool extends Task<Deferred<Tool>>{
      */
     @Override
     protected void start() {
+        warehouse.releaseTool(deferredTool.get());
+        complete(null);
 
     }
 }

@@ -34,13 +34,13 @@ public class VersionMonitor {
         // Wait as long as parameter version matches current version
         while (getVersion() == version) {
             wait();
-            System.out.println(Thread.currentThread().getId()+" Is going to Sleep");
+          //  System.out.println(Thread.currentThread().getId()+" Is going to Sleep");
 
 //            if(Thread.currentThread().isInterrupted()){
 //                throw new InterruptedException();
 //            }
         }
-        System.out.println(Thread.currentThread().getId()+" is wake now");
+       // System.out.println(Thread.currentThread().getId()+" is wake now");
 
     }
 

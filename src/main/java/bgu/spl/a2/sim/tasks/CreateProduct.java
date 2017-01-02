@@ -71,16 +71,31 @@ public class CreateProduct extends Task<Product> {
         } else {
             for (String tool : plan.getTools()) {
                 //System.out.println(Thread.currentThread().getId() + " is trying to get " + tool);
+             //   System.out.println(product.getName()+" acquire "+tool);
+              //  System.out.println("number of "+tool+" in warehouse = " +warehouse.amoutOfTool.get(tool));
                 Deferred<Tool> deferredTool = warehouse.acquireTool(tool);
+              //  System.out.println("number of "+tool+" in warehouse after acquire = " +warehouse.amoutOfTool.get(tool));
                 Runnable useTool = () -> {
                     sumOfUsage.addAndGet(deferredTool.get().useOn(product));
-                    warehouse.releaseTool(deferredTool.get());
-                    numOfToolsNeeded.getAndDecrement();
+                   // warehouse.releaseTool(deferredTool.get());
+                    spawn(new ReleaseTool(warehouse,deferredTool));
+                    AtomicInteger currentNumOfTools= new AtomicInteger(numOfToolsNeeded.decrementAndGet());
+                    //System.out.println(product.getName()+" used "+deferredTool.get().getType());
 
-                    if (numOfToolsNeeded.compareAndSet(0, 0)) {
+                    if (currentNumOfTools.get()==0) {
                         //System.out.println(Thread.currentThread().getId() + " Finished to create: " + product.getName() + "+++++++++++++");
                         product.setFinalId(product.getStartId() + sumOfUsage.get());
                         complete(product);
+//                        System.out.println("number of defered waiting to - "+"screswdriver "+
+//                                warehouse.deferredScerawDriversWaitingResolve.size());
+//                        System.out.println("number of defered waiting to - "+"hammers "+
+//                                warehouse.deferredHammersWaitingResolve.size());
+//                        System.out.println("number of defered waiting to - "+"pliers "+
+//                                warehouse.deferredPliersWaitingResolve.size());
+//                        System.out.println("number of "+"gs-griver"+" = " +warehouse.amoutOfTool.get("gs-driver"));
+//                        System.out.println("number of "+"np-hammer"+" = " +warehouse.amoutOfTool.get("np-hammer"));
+//                        System.out.println("number of "+"rs-pliers"+" = " +warehouse.amoutOfTool.get("rs-pliers"));
+
                     }
                 };
 

@@ -88,7 +88,7 @@ public class Deferred<T> {
      * @param callback the callback to be called when the deferred object is
      * resolved
      */
-    public void whenResolved(Runnable callback) {
+    public synchronized void whenResolved(Runnable callback) {
         // TODO: how to handle the "Note" (leak and more then one issue)
         if (isResolved) {
             callback.run();

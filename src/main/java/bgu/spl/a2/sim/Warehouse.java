@@ -22,10 +22,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Warehouse {
     private Map<String, ManufacturingPlan> productPlansMap;
-    private Map<String, AtomicInteger> amoutOfTool;
-    private ConcurrentLinkedQueue<Deferred<Tool>> deferredScerawDriversWaitingResolve;
-    private ConcurrentLinkedQueue<Deferred<Tool>> deferredHammersWaitingResolve;
-    private ConcurrentLinkedQueue<Deferred<Tool>> deferredPliersWaitingResolve;
+    public Map<String, AtomicInteger> amoutOfTool;
+    public Map<String, ConcurrentLinkedQueue<Deferred<Tool>>> defferedWaitingResolve;
+//    public ConcurrentLinkedQueue<Deferred<Tool>> deferredScerawDriversWaitingResolve;
+//    public ConcurrentLinkedQueue<Deferred<Tool>> deferredHammersWaitingResolve;
+//    public ConcurrentLinkedQueue<Deferred<Tool>> deferredPliersWaitingResolve;
 
     /**
      * Constructor
@@ -37,9 +38,14 @@ public class Warehouse {
             put("np-hammer", new AtomicInteger(0));
             put("rs-pliers", new AtomicInteger(0));
         }};
-        deferredHammersWaitingResolve = new ConcurrentLinkedQueue<>();
-        deferredScerawDriversWaitingResolve = new ConcurrentLinkedQueue<>();
-        deferredPliersWaitingResolve = new ConcurrentLinkedQueue<>();
+        defferedWaitingResolve = new HashMap<String, ConcurrentLinkedQueue<Deferred<Tool>>>() {{
+            put("gs-driver", new ConcurrentLinkedQueue<>());
+            put("np-hammer", new ConcurrentLinkedQueue<>());
+            put("rs-pliers", new ConcurrentLinkedQueue<>());
+        }};
+//        deferredHammersWaitingResolve = new ConcurrentLinkedQueue<>();
+//        deferredScerawDriversWaitingResolve = new ConcurrentLinkedQueue<>();
+//        deferredPliersWaitingResolve = new ConcurrentLinkedQueue<>();
     }
 
 
@@ -60,7 +66,7 @@ public class Warehouse {
             amoutOfTool.get(type).decrementAndGet();
             deferredTool.resolve(ToolsFactory.createTool(type));
         } else {
-            deferredScerawDriversWaitingResolve.add(deferredTool);
+            defferedWaitingResolve.get(type).add(deferredTool);
         }
 
         return deferredTool;
@@ -109,7 +115,14 @@ public class Warehouse {
      */
     public synchronized void releaseTool(Tool tool) {
         // TODO: 26/12/2016 maybe sync?
-            amoutOfTool.get(tool.getType()).incrementAndGet();
+        if (!(defferedWaitingResolve.get(tool.getType()).isEmpty())) {
+            Deferred<Tool> deferredTool = defferedWaitingResolve.get(tool.getType()).poll();
+            deferredTool.resolve(tool);
+        }else{
+            amoutOfTool.get(tool.getType()).getAndIncrement();
+        }
+
+
     }
 
     /**

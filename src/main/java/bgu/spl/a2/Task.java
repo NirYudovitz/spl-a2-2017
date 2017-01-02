@@ -59,7 +59,7 @@ public abstract class Task<R> {
      *
      * @param task the task to execute
      */
-    protected final void spawn(Task<?>... task) {
+    protected synchronized final void spawn(Task<?>... task) {
         processor.addTasks(task);
     }
     //todo sync? sagie
@@ -74,7 +74,7 @@ public abstract class Task<R> {
      * @param tasks
      * @param callback the callback to execute once all the results are resolved
      */
-    protected final void whenResolved(Collection<? extends Task<?>> tasks, Runnable callback) {
+    protected synchronized final void whenResolved(Collection<? extends Task<?>> tasks, Runnable callback) {
         AtomicInteger numOfTasks = new AtomicInteger(tasks.size());
 
         for (Task<?> t : tasks) {

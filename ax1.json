@@ -1,18 +1,18 @@
 {
-    "threads": 4,
+    "threads": 40,
     
     "tools": [
         {
             "tool": "gs-driver",
-            "qty": 1
+            "qty": 10
         },
         {
             "tool": "np-hammer",
-            "qty": 1
+            "qty": 10
         },
         {
             "tool": "rs-pliers",
-            "qty": 1
+            "qty": 10
         }
     ],
     "plans": [
@@ -86,181 +86,181 @@
         [
             {
                 "product": "yphone30",
-                "qty": 1,
+                "qty": 500,
                 "startId": 50123450
+            },
+            {
+                "product": "yphone30-pro",
+                "qty": 500,
+                "startId": 50234560
+            },
+            {
+                "product": "yphone30-pro-plus",
+                "qty": 500,
+                "startId": 502345601
             }
-//            {
-//                "product": "yphone30-pro",
-//                "qty": 500,
-//                "startId": 50234560
-//            },
-//            {
-//                "product": "yphone30-pro-plus",
-//                "qty": 500,
-//                "startId": 502345601
-//            }
-//
-//        ],
-//		[
-//            {
-//                "product": "yphone30",
-//                "qty": 500,
-//                "startId": 50123450
-//            },
-//            {
-//                "product": "yphone30-pro",
-//                "qty": 500,
-//                "startId": 50234560
-//            },
-//            {
-//                "product": "yphone30-pro-plus",
-//                "qty": 500,
-//                "startId": 502345601
-//            }
-//
-//        ],
-//		[
-//            {
-//                "product": "yphone30",
-//                "qty": 500,
-//                "startId": 50123450
-//            },
-//            {
-//                "product": "yphone30-pro",
-//                "qty": 500,
-//                "startId": 50234560
-//            },
-//            {
-//                "product": "yphone30-pro-plus",
-//                "qty": 500,
-//                "startId": 502345601
-//            }
-//
-//        ],
-//		[
-//            {
-//                "product": "yphone30",
-//                "qty": 500,
-//                "startId": 50123450
-//            },
-//            {
-//                "product": "yphone30-pro",
-//                "qty": 500,
-//                "startId": 50234560
-//            },
-//            {
-//                "product": "yphone30-pro-plus",
-//                "qty": 500,
-//                "startId": 502345601
-//            }
-//
-//        ],
-//		[
-//            {
-//                "product": "yphone30",
-//                "qty": 500,
-//                "startId": 50123450
-//            },
-//            {
-//                "product": "yphone30-pro",
-//                "qty": 500,
-//                "startId": 50234560
-//            },
-//            {
-//                "product": "yphone30-pro-plus",
-//                "qty": 500,
-//                "startId": 502345601
-//            }
-//
-//        ],
-//		[
-//            {
-//                "product": "yphone30",
-//                "qty": 500,
-//                "startId": 50123450
-//            },
-//            {
-//                "product": "yphone30-pro",
-//                "qty": 500,
-//                "startId": 50234560
-//            },
-//            {
-//                "product": "yphone30-pro-plus",
-//                "qty": 500,
-//                "startId": 502345601
-//            }
-//
-//        ],
-//		[
-//            {
-//                "product": "yphone30",
-//                "qty": 500,
-//                "startId": 50123450
-//            },
-//            {
-//                "product": "yphone30-pro",
-//                "qty": 500,
-//                "startId": 50234560
-//            },
-//            {
-//                "product": "yphone30-pro-plus",
-//                "qty": 500,
-//                "startId": 502345601
-//            }
-//
-//        ],
-//		[
-//            {
-//                "product": "yphone30",
-//                "qty": 500,
-//                "startId": 50123450
-//            },
-//            {
-//                "product": "yphone30-pro",
-//                "qty": 500,
-//                "startId": 50234560
-//            },
-//            {
-//                "product": "yphone30-pro-plus",
-//                "qty": 500,
-//                "startId": 502345601
-//            }
-//
-//        ],
-//		[
-//            {
-//                "product": "yphone30",
-//                "qty": 500,
-//                "startId": 50123450
-//            },
-//            {
-//                "product": "yphone30-pro",
-//                "qty": 500,
-//                "startId": 50234560
-//            },
-//            {
-//                "product": "yphone30-pro-plus",
-//                "qty": 500,
-//                "startId": 502345601
-//            }
-//
-//        ],
-//        [
-//            {
-//                "product": "yphone30",
-//                "qty": 500,
-//                "startId": 501623450
-//            },
-//            {
-//                "product": "yphone30-pro",
-//                "qty": 500,
-//                "startId": 560234560
-//            },
-//            {
-//                "product": "yphone30-pro-plus",
-//                "qty": 500,
-//                "startId": 5602345601
-//            }
+
+        ],
+		[
+            {
+                "product": "yphone30",
+                "qty": 500,
+                "startId": 50123450
+            },
+            {
+                "product": "yphone30-pro",
+                "qty": 500,
+                "startId": 50234560
+            },
+            {
+                "product": "yphone30-pro-plus",
+                "qty": 500,
+                "startId": 502345601
+            }
+
+        ],
+		[
+            {
+                "product": "yphone30",
+                "qty": 500,
+                "startId": 50123450
+            },
+            {
+                "product": "yphone30-pro",
+                "qty": 500,
+                "startId": 50234560
+            },
+            {
+                "product": "yphone30-pro-plus",
+                "qty": 500,
+                "startId": 502345601
+            }
+
+        ],
+		[
+            {
+                "product": "yphone30",
+                "qty": 500,
+                "startId": 50123450
+            },
+            {
+                "product": "yphone30-pro",
+                "qty": 500,
+                "startId": 50234560
+            },
+            {
+                "product": "yphone30-pro-plus",
+                "qty": 500,
+                "startId": 502345601
+            }
+
+        ],
+		[
+            {
+                "product": "yphone30",
+                "qty": 500,
+                "startId": 50123450
+            },
+            {
+                "product": "yphone30-pro",
+                "qty": 500,
+                "startId": 50234560
+            },
+            {
+                "product": "yphone30-pro-plus",
+                "qty": 500,
+                "startId": 502345601
+            }
+
+        ],
+		[
+            {
+                "product": "yphone30",
+                "qty": 500,
+                "startId": 50123450
+            },
+            {
+                "product": "yphone30-pro",
+                "qty": 500,
+                "startId": 50234560
+            },
+            {
+                "product": "yphone30-pro-plus",
+                "qty": 500,
+                "startId": 502345601
+            }
+
+        ],
+		[
+            {
+                "product": "yphone30",
+                "qty": 500,
+                "startId": 50123450
+            },
+            {
+                "product": "yphone30-pro",
+                "qty": 500,
+                "startId": 50234560
+            },
+            {
+                "product": "yphone30-pro-plus",
+                "qty": 500,
+                "startId": 502345601
+            }
+
+        ],
+		[
+            {
+                "product": "yphone30",
+                "qty": 500,
+                "startId": 50123450
+            },
+            {
+                "product": "yphone30-pro",
+                "qty": 500,
+                "startId": 50234560
+            },
+            {
+                "product": "yphone30-pro-plus",
+                "qty": 500,
+                "startId": 502345601
+            }
+
+        ],
+		[
+            {
+                "product": "yphone30",
+                "qty": 500,
+                "startId": 50123450
+            },
+            {
+                "product": "yphone30-pro",
+                "qty": 500,
+                "startId": 50234560
+            },
+            {
+                "product": "yphone30-pro-plus",
+                "qty": 500,
+                "startId": 502345601
+            }
+
+        ],
+        [
+            {
+                "product": "yphone30",
+                "qty": 500,
+                "startId": 501623450
+            },
+            {
+                "product": "yphone30-pro",
+                "qty": 500,
+                "startId": 560234560
+            },
+            {
+                "product": "yphone30-pro-plus",
+                "qty": 500,
+                "startId": 5602345601
+            }
         ]
     ]
 	
