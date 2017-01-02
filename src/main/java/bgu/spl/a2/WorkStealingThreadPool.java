@@ -84,6 +84,12 @@ public class WorkStealingThreadPool {
 //            t.join();
             i++;
         }
+        for (Thread t : threadsArr) {
+            if (Thread.currentThread().getId() == t.getId()) {
+                throw new UnsupportedOperationException();
+            }
+            t.join();
+        }
         //todo something with that function- join ?
 
     }
@@ -163,7 +169,7 @@ public class WorkStealingThreadPool {
      * @param to   is the id of the processor that steal.
      * @return false if there is no more task to steal , true if steal was success.
      */
-    private synchronized boolean steal(int to, int from) {
+    private boolean steal(int to, int from) {
         Task<?> taskToSteal = tasksQueues[from].pollLast();
         if (taskToSteal != null) {
             return tasksQueues[to].add(taskToSteal);
