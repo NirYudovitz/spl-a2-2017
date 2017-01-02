@@ -37,7 +37,7 @@ public class Product implements java.io.Serializable {
         this.finalId = new AtomicLong(0);
         this.name = name;
         partList = new LinkedList<>();
-        //if product dow
+        //if product doesnt have order - this case possibly when sub part of other product
         this.orderToPrint = -1;
     }
 
