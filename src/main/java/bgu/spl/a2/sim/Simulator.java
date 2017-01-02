@@ -19,15 +19,18 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * A class describing the simulator for part 2 of the assignment
+ * A class describing the simulator for part 2 of the assignment.
  */
 public class Simulator {
     private static WorkStealingThreadPool threadPool;
     private static Warehouse wareHouse;
     private static List<List<JsonWaves>> waves;
 
+    /**
+     * initialize wareHouse and waves.
+     */
     static {
-        wareHouse=new Warehouse();
+        wareHouse = new Warehouse();
         waves = new LinkedList<>();
     }
 
@@ -36,49 +39,57 @@ public class Simulator {
      * Begin the simulation
      * Should not be called before attachWorkStealingThreadPool()
      */
+    /**
+     * Begin the simulation
+     *
+     * @return ConcurrentLinkedQueue of Products
+     */
     public static ConcurrentLinkedQueue<Product> start() {
         ConcurrentLinkedQueue<Product> manufacturedProducts = new ConcurrentLinkedQueue<>();
         threadPool.start();
         int j = 0;
-        for (List<JsonWaves> jwave:waves){
 
-            int totalProducts= 0;
-            System.out.println("Starting a new wave: " + j);
-            for (int i = 0; i<jwave.size(); i++) {
+        // going over the waves.
+        for (List<JsonWaves> jwave : waves) {
+
+            int totalProducts = 0;
+
+            //Summing number of products to be created.
+            for (int i = 0; i < jwave.size(); i++) {
 
                 totalProducts += jwave.get(i).getQty();
             }
-            Product[] waveProducts=new Product[totalProducts];
-            int numOfProductsToPrint=totalProducts-1;
-            int orderPrint=totalProducts;
+
+            // array of products in current wave - array is sorting bi indexing order in product.
+            Product[] waveProducts = new Product[totalProducts];
+            // represent the number of products to be printed.
+            int numOfProductsToPrint = totalProducts - 1;
+            //represent the current order print of product.
+            int orderPrint = totalProducts;
+            // represents the number of tools that need to be finish before going to next wave.
             CountDownLatch countDownLatch = new CountDownLatch(totalProducts);
-            //System.out.println("the length of the wave is: " + jwave.size());
-            for(JsonWaves wave:jwave) {
-                System.out.println("wave starting to create: " + wave.getQty() + " " + wave.getProduct());
-                //Product product;
 
-                for (int i=0; i<wave.getQty(); i++){
-
-                    Product product = new Product(wave.getStartId() + i, wave.getProduct(),--orderPrint);
-                    //System.out.println("starting task" + wave.getProduct());
+            //going over products and create them.
+            for (JsonWaves wave : jwave) {
+                //going over number of product according to quantity.
+                for (int i = 0; i < wave.getQty(); i++) {
+                    //creating new product and stting order to print.
+                    Product product = new Product(wave.getStartId() + i, wave.getProduct(), --orderPrint);
                     Task<Product> task = new CreateProduct(product, wareHouse);
                     String name = product.getName();
                     threadPool.submit(task);
+
+                    // when product is ready to be finish/
                     task.getResult().whenResolved(() -> {
-                        //System.out.print("created a: " + name + " changing count to: ");
-                        //System.out.println(countDownLatch.getCount());
                         countDownLatch.countDown();
-                        waveProducts[numOfProductsToPrint-product.getOrderToPrint()]=product;
-//                        manufacturedProducts.add(product);
+                        waveProducts[numOfProductsToPrint - product.getOrderToPrint()] = product;
                     });
                 }
             }
+
             try {
-                //System.out.println("I'm waiting.......");
                 countDownLatch.await();
-            }
-            catch (InterruptedException e){
-                // TODO: 28/12/2016 Do something
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             j++;
@@ -90,37 +101,37 @@ public class Simulator {
             e.printStackTrace();
         }
 
+        //return ConcurrentLinkedQueue< of all products thet created.
         return manufacturedProducts;
     }
 
-    public static void addToolsToWarehouse(List<JsonTools> jTools){
-        for(JsonTools jTool:jTools) {
 
-            wareHouse.addTool(ToolsFactory.createTool(jTool.getTool()),jTool.getQty());
-
-//            switch (jTool.getTool()) {
-//                case "gs-driver":
-//                    wareHouse.addTool(new GcdScrewDriver(),jTool.getQty());
-//                    break;
-//                case "np-hammer":
-//                    wareHouse.addTool(new NextPrimeHammer(),jTool.getQty());
-//                    break;
-//                case "rs-pliers":
-//                    wareHouse.addTool(new RandomSumPliers(),jTool.getQty());
-//                    break;
-//            }
+    /**
+     * @param jTools is a list of tools from json files to added to warehouse.
+     */
+    public static void addToolsToWarehouse(List<JsonTools> jTools) {
+        for (JsonTools jTool : jTools) {
+            wareHouse.addTool(ToolsFactory.createTool(jTool.getTool()), jTool.getQty());
 
         }
     }
+
+    /**
+     * @param jPlans is a list of plans from json files to added to warehouse.
+     */
     public static void addPlansToWarehouse(List<JsonPlans> jPlans) {
-        for(JsonPlans jPlan:jPlans){
-            String newProduct=jPlan.getProduct();
-            String newParts[]=jPlan.getParts().toArray(new String[jPlan.getParts().size()]);
-            String newTools[]=jPlan.getTools().toArray(new String[jPlan.getTools().size()]);
-            wareHouse.addPlan(new ManufacturingPlan(newProduct,newParts,newTools));
+        for (JsonPlans jPlan : jPlans) {
+            String newProduct = jPlan.getProduct();
+            String newParts[] = jPlan.getParts().toArray(new String[jPlan.getParts().size()]);
+            String newTools[] = jPlan.getTools().toArray(new String[jPlan.getTools().size()]);
+            wareHouse.addPlan(new ManufacturingPlan(newProduct, newParts, newTools));
         }
     }
-    public static void getWavesFromJson(List<List<JsonWaves>> waves){
+
+    /**
+     * @param waves is the waves to get from json file and settin in simulator.
+     */
+    public static void getWavesFromJson(List<List<JsonWaves>> waves) {
         Simulator.waves = waves;
     }
 
@@ -128,19 +139,24 @@ public class Simulator {
     /**
      * attach a WorkStealingThreadPool to the Simulator, this WorkStealingThreadPool will be used to run the simulation
      *
-     * @param myWorkStealingThreadPool - the WorkStealingThreadPool which will be used by the simulator
+     * @param myWorkStealingThreadPool - the WorkStealingThreadPool which will be used by the simulator.
      */
     public static void attachWorkStealingThreadPool(WorkStealingThreadPool myWorkStealingThreadPool) {
         threadPool = myWorkStealingThreadPool;
     }
 
+
+    /**
+     * runnig a parse on json file and create products, finally write products to ser file.
+     *
+     * @param args is where the json fils is located.
+     */
     public static void main(String[] args) {
         //Simulator simulator = new Simulator();
 
         // ***** Parsing the Json file *****
         JsonParser jsonParser = new JsonParser();
         jsonParser.parse(args);
-
 
 
         // ***** Adding parts and plans to the warehouse *****
@@ -153,18 +169,14 @@ public class Simulator {
         //***** Creating a threadpool with the number of threads from the json file *****
         attachWorkStealingThreadPool(new WorkStealingThreadPool(jsonParser.getNumOfThreds()));
         ConcurrentLinkedQueue<Product> manufacturedProducts = Simulator.start();
-        try{
+
+        //creating ser file and write products object into file.
+        try {
             FileOutputStream fout = new FileOutputStream("result.ser");
             ObjectOutputStream oos = new ObjectOutputStream(fout);
             oos.writeObject(manufacturedProducts);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-//        String output = "";
-//        for (Product product : manufacturedProducts){
-//            output += (product.toString());
-//        }
-//        System.out.println(output);
-//        return 0; //todo main int
     }
 }
