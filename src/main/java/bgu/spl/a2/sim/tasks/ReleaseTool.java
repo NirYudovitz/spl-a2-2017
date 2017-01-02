@@ -8,21 +8,25 @@ import bgu.spl.a2.sim.Warehouse;
 import bgu.spl.a2.sim.tools.Tool;
 
 /**
- * Created by Nir1612 on 28/12/2016.
+ * A class that represents a task for releasing a tool
  */
-public class ReleaseTool extends Task<Deferred<Tool>>{
+public class ReleaseTool extends Task<Deferred<Tool>> {
     private Warehouse warehouse;
-    private Deferred<Tool>  deferredTool;
+    private Deferred<Tool> deferredTool;
 
+    /**
+     * ReleaseTool C-tor
+     *
+     * @param warehouse    - Is the warehouse to be used
+     * @param deferredTool - the Deferred object that holds the tool needed to be released
+     */
     public ReleaseTool(Warehouse warehouse, Deferred<Tool> deferredTool) {
-        this.warehouse=warehouse;
+        this.warehouse = warehouse;
         this.deferredTool = deferredTool;
     }
 
     /**
-     * start handling the task - note that this method is protected, a handler
-     * cannot call it directly but instead must use the
-     * {@link #handle(Processor)} method
+     * starting the task that will release a tool and be completed
      */
     @Override
     protected void start() {
