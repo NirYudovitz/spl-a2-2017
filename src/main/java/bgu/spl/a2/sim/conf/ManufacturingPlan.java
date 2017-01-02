@@ -19,7 +19,6 @@ public class ManufacturingPlan {
     	this.product = product;
     	this.parts = parts;
     	this.tools = tools;
-		// TODO: 26/12/2016 if we change the array, change to deep copy 
 	}
 	
 	/**
@@ -27,11 +26,10 @@ public class ManufacturingPlan {
 	*/
     public String[] getParts(){
     	return parts;
-		// TODO: 26/12/2016 if we change the array, change to deep copy 
 	}
 
 	/**
-	* @return string containing product name
+	* @return string containing product name.
 	*/
     public String getProductName(){
     	return product;
@@ -41,7 +39,6 @@ public class ManufacturingPlan {
 	*/
     public String[] getTools(){
     	return tools;
-		// TODO: 26/12/2016 if we change the array, change to deep copy 
 	}
 
 }

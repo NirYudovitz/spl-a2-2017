@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by Nir1612 on 28/12/2016.
+ * class represent JsonParser.
  */
 public class JsonParser {
     private int numOfThreds;
@@ -16,12 +16,21 @@ public class JsonParser {
     private List<JsonPlans> plans;
     private List<List<JsonWaves>> waves;
 
+    /**
+     * JsonParser C-tor.
+     */
     public JsonParser() {
         plans = new LinkedList<>();
         tools = new LinkedList<>();
         waves = new LinkedList<>();
     }
-    public void parse(String[] args){
+
+    /**
+     * pharse json file to num of thareds,tools,plans and waves with Gson.
+     *
+     * @param args is the json file input.
+     */
+    public void parse(String[] args) {
         Gson gson = new Gson();
         String file = args[0];
         try (FileReader fileReader = new FileReader(file);) {
@@ -36,17 +45,31 @@ public class JsonParser {
             System.out.println("cought an IO Exception: " + ioExc);
         }
     }
+
+    /**
+     * @return number of threads according to input in json file.
+     */
     public int getNumOfThreds() {
         return numOfThreds;
     }
 
+    /**
+     * @return list of tools according to input in json file.
+     */
     public List<JsonTools> getTools() {
         return tools;
     }
 
+    /**
+     * @return lists of plans according to input in json file.
+     */
     public List<JsonPlans> getPlans() {
         return plans;
     }
+
+    /**
+     * @return list of list og jsonwaves according to input in json file.
+     */
 
     public List<List<JsonWaves>> getWaves() {
         return waves;
