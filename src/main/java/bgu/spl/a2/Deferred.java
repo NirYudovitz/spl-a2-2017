@@ -66,7 +66,6 @@ public class Deferred<T> {
     public synchronized void resolve(T value) {
         if (!isResolved) {
             isResolved = true;
-            //how to sync isresolved true
             result = value;
             for (Runnable callback : callBacks) {
                 callback.run();

@@ -24,7 +24,7 @@ public class MergeSort extends Task<int[]> {
 
     public static void main(String[] args) throws InterruptedException {
         WorkStealingThreadPool pool = new WorkStealingThreadPool(4);
-        int n = 1000000; //you may check on different number of elements if you like
+        int n = 1000000;
         int[] array = new Random().ints(n).toArray();
 
         MergeSort task = new MergeSort(array);
@@ -33,7 +33,6 @@ public class MergeSort extends Task<int[]> {
         pool.start();
         pool.submit(task);
         task.getResult().whenResolved(() -> {
-            //warning - a large print!! - you can remove this line if you wish
             System.out.println(Arrays.toString(task.getResult().get()));
             l.countDown();
         });
@@ -86,7 +85,6 @@ public class MergeSort extends Task<int[]> {
         int secondArrayIndx = 0;
         int originalArrayIndx = 0;
 
-        // Override original array with same values but sorted
         while (firstArrayIndx < firstSortedArray.length && secondArrayIndx < secondSortedArray.length) {
             if (firstSortedArray[firstArrayIndx] <= secondSortedArray[secondArrayIndx]) {
                 array[originalArrayIndx] = firstSortedArray[firstArrayIndx];
@@ -98,11 +96,11 @@ public class MergeSort extends Task<int[]> {
             originalArrayIndx ++;
         }
 
-        // Copy rest of arr1
+        // Copy rest of firstSortedArray
         System.arraycopy(firstSortedArray, firstArrayIndx, array, originalArrayIndx,
                         firstSortedArray.length - firstArrayIndx);
 
-        // Copy rest of arr2
+        // Copy rest of secondSortedArray
         System.arraycopy(secondSortedArray, secondArrayIndx, array, originalArrayIndx,
                 secondSortedArray.length - secondArrayIndx);
     }

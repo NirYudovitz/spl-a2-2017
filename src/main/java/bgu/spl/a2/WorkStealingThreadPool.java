@@ -98,10 +98,6 @@ public class WorkStealingThreadPool {
         }
     }
 
-//    public Deque<Task<?>> getDeque(int id){
-//        return tasksQueues[id];
-//    }
-
     public Task<?> getNextTask(int id) {
         synchronized (this) {
             return (tasksQueues[id].pollFirst());

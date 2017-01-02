@@ -98,7 +98,7 @@ public class Simulator {
             e.printStackTrace();
         }
 
-        //return ConcurrentLinkedQueue< of all products thet created.
+        //return ConcurrentLinkedQueue of all products that created.
         return manufacturedProducts;
     }
 
@@ -149,8 +149,6 @@ public class Simulator {
      * @param args is where the json fils is located.
      */
     public static void main(String[] args) {
-        //Simulator simulator = new Simulator();
-
         // ***** Parsing the Json file *****
         JsonParser jsonParser = new JsonParser();
         jsonParser.parse(args);
