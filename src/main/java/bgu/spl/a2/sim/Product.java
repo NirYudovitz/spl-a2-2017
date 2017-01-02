@@ -90,7 +90,6 @@ public class Product implements java.io.Serializable {
      */
     public void addPart(Product p) {
         partList.add(p);
-        // TODO: 26/12/2016 maybe sync?
     }
 
     /**
