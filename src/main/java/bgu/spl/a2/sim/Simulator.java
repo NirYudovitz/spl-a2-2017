@@ -164,8 +164,6 @@ public class Simulator {
         attachWorkStealingThreadPool(new WorkStealingThreadPool(jsonParser.getNumOfThreds()));
         ConcurrentLinkedQueue<Product> manufacturedProducts = Simulator.start();
 
-        System.out.println(manufacturedProducts.size());
-
         //creating ser file and write products object into file.
         ObjectOutputStream oos = null;
         FileOutputStream fout = null;
