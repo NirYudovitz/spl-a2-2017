@@ -13,23 +13,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * A class representing the warehouse in your simulation
- * <p>
- * Note for implementors: you may add methods and synchronize any of the
- * existing methods in this class *BUT* you must be able to explain why the
- * synchronization is needed. In addition, the methods you add to this class can
- * only be private!!
+ * A class representing the warehouse
  */
 public class Warehouse {
     private Map<String, ManufacturingPlan> productPlansMap;
     public Map<String, AtomicInteger> amoutOfTool;
     public Map<String, ConcurrentLinkedQueue<Deferred<Tool>>> defferedWaitingResolve;
-//    public ConcurrentLinkedQueue<Deferred<Tool>> deferredScerawDriversWaitingResolve;
-//    public ConcurrentLinkedQueue<Deferred<Tool>> deferredHammersWaitingResolve;
-//    public ConcurrentLinkedQueue<Deferred<Tool>> deferredPliersWaitingResolve;
 
     /**
-     * Constructor
+     * Warehouse C - tor
      */
     public Warehouse() {
         productPlansMap = new HashMap<>();
@@ -43,24 +35,15 @@ public class Warehouse {
             put("np-hammer", new ConcurrentLinkedQueue<>());
             put("rs-pliers", new ConcurrentLinkedQueue<>());
         }};
-//        deferredHammersWaitingResolve = new ConcurrentLinkedQueue<>();
-//        deferredScerawDriversWaitingResolve = new ConcurrentLinkedQueue<>();
-//        deferredPliersWaitingResolve = new ConcurrentLinkedQueue<>();
     }
-
 
     /**
      * Tool acquisition procedure
-     * Note that this procedure is non-blocking and should return immediatly
      *
      * @param type - string describing the required tool
      * @return a deferred promise for the  requested tool
      */
     public synchronized Deferred<Tool> acquireTool(String type) {
-        // TODO: 26/12/2016 think on some smarter way to do this
-        // TODO: 26/12/2016 handle catch
-        // TODO: 26/12/2016 try without sync
-
         Deferred<Tool> deferredTool = new Deferred<>();
         if (amoutOfTool.get(type).get() > 0) {
             amoutOfTool.get(type).decrementAndGet();
@@ -68,45 +51,8 @@ public class Warehouse {
         } else {
             defferedWaitingResolve.get(type).add(deferredTool);
         }
-
         return deferredTool;
     }
-
-//
-//        switch (type) {
-//            case "GcdScrewDriver":
-//                synchronized (this) {
-//                    if (amountOfScrewDrivers.get() > 0) {
-//                        amountOfScrewDrivers.decrementAndGet();
-//                        deferredTool.resolve(new GcdScrewDriver());
-//                    } else {
-//                        deferredScerawDriversWaitingResolve.add(deferredTool);
-//                    }
-//
-//                    break;
-//                }
-//            case "NextPrimeHammer":
-//                synchronized (this) {
-//                    if (amountOfHammers.get() > 0) {
-//                        amountOfHammers.decrementAndGet();
-//                        deferredTool.resolve(new NextPrimeHammer());
-//                    } else {
-//                        deferredHammersWaitingResolve.add(deferredTool);
-//                    }
-//                    break;
-//                }
-//            case "RandomSumPliers":
-//                synchronized (this) {
-//                    if (amountOfPliers.get() > 0) {
-//                        amountOfPliers.decrementAndGet();
-//                        deferredTool.resolve(new RandomSumPliers());
-//                    } else {
-//                        deferredPliersWaitingResolve.add(deferredTool);
-//                    }
-//                    break;
-//                }
-//        }
-//    }
 
     /**
      * Tool return procedure - releases a tool which becomes available in the warehouse upon completion.
@@ -114,15 +60,12 @@ public class Warehouse {
      * @param tool - The tool to be returned
      */
     public synchronized void releaseTool(Tool tool) {
-        // TODO: 26/12/2016 maybe sync?
         if (!(defferedWaitingResolve.get(tool.getType()).isEmpty())) {
             Deferred<Tool> deferredTool = defferedWaitingResolve.get(tool.getType()).poll();
             deferredTool.resolve(tool);
-        }else{
+        } else {
             amoutOfTool.get(tool.getType()).getAndIncrement();
         }
-
-
     }
 
     /**
@@ -144,7 +87,6 @@ public class Warehouse {
         productPlansMap.put(plan.getProductName(), plan);
     }
 
-
     /**
      * Store a qty Amount of tools of type tool in the warehouse for later retrieval
      *
@@ -152,11 +94,9 @@ public class Warehouse {
      * @param qty  - amount of tools of type tool to be stored
      */
     public void addTool(Tool tool, int qty) {
-        // TODO: 26/12/2016 think on some smarter way to do this
         amoutOfTool.get(tool.getType()).getAndAdd(qty);
 
     }
-
 }
 
 
