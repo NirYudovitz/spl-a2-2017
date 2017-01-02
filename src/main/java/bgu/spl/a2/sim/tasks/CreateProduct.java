@@ -12,31 +12,31 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-
 /**
- * Created by Nirdun on 28.12.2016.
+ * A class that represents a task for manufacturing a product
  */
 public class CreateProduct extends Task<Product> {
-    //private final Product product;
     private Warehouse warehouse;
     private final ManufacturingPlan plan;
     private Product product;
-    //private boolean allToolsAvailable;
-    //private boolean allPartsAvailable;
-    //private CountDownLatch countDownLatch;
 
+    /**
+     * CreateProduct C-tor
+     *
+     * @param product   - Is the product to be manufactured
+     * @param warehouse - Is the warehouse to be used
+     */
     public CreateProduct(Product product, Warehouse warehouse) {
         this.product = product;
         this.warehouse = warehouse;
         plan = warehouse.getPlan(product.getName());
-        //allToolsAvailable = plan.getTools().length == 0;
-        //allPartsAvailable = plan.getParts().length == 0;
-//        if (product.getParts().size() == 0) {
-//            addPartsToProduct();
-//        }
         addSubPartsToProduct();
     }
 
+    /**
+     * Going over the sub parts needed for the product as seen in the product's plan
+     * creating a Product instance for that sub part and adding it to the product's partList
+     */
     private void addSubPartsToProduct() {
         String[] parts = plan.getParts();
         long subPartId = product.getStartId() + 1;
@@ -46,22 +46,24 @@ public class CreateProduct extends Task<Product> {
         }
     }
 
+
+    /**
+     * starting the task be calling a method for creating the product's sub Part
+     */
     @Override
     protected void start() {
-        //System.out.println(Thread.currentThread().getId() + " is starting to create: " + product.getName() + " +++++++++++++++++");
         createSubParts();
-//        if (!allPartsAvailable) {
-//            createSubParts();
-//        } else if (!allToolsAvailable) {
-//            getTools();
-//        } else {
-//            complete(product);
-//            //countDownLatch.countDown();
-//        }
     }
 
+    /**
+     * if no toolas are needed - compute the useOn and complete the product
+     * otherwise, iterate on the product's list of tools and for every tool
+     * create a Deferrd object that would be resolved when a tool is available
+     * When the Deferred object is resolved, calculate the useOn of the tool on the product
+     * and create a task to release the tool.
+     * when all the tools finished working, complete the product
+     */
     private void getTools() {
-        //List<Task<Deferred<Tool>>> acquireToolsTasks = new ArrayList<>();
         AtomicInteger numOfToolsNeeded = new AtomicInteger(plan.getTools().length);
         AtomicLong sumOfUsage = new AtomicLong(0);
 
@@ -69,62 +71,37 @@ public class CreateProduct extends Task<Product> {
             product.setFinalId(product.getStartId());
             complete(product);
         } else {
+
             for (String tool : plan.getTools()) {
-                //System.out.println(Thread.currentThread().getId() + " is trying to get " + tool);
-             //   System.out.println(product.getName()+" acquire "+tool);
-              //  System.out.println("number of "+tool+" in warehouse = " +warehouse.amoutOfTool.get(tool));
                 Deferred<Tool> deferredTool = warehouse.acquireTool(tool);
-              //  System.out.println("number of "+tool+" in warehouse after acquire = " +warehouse.amoutOfTool.get(tool));
                 Runnable useTool = () -> {
                     sumOfUsage.addAndGet(deferredTool.get().useOn(product));
-                   // warehouse.releaseTool(deferredTool.get());
-                    spawn(new ReleaseTool(warehouse,deferredTool));
-                    AtomicInteger currentNumOfTools= new AtomicInteger(numOfToolsNeeded.decrementAndGet());
-                    //System.out.println(product.getName()+" used "+deferredTool.get().getType());
+                    spawn(new ReleaseTool(warehouse, deferredTool));
+                    AtomicInteger currentNumOfTools = new AtomicInteger(numOfToolsNeeded.decrementAndGet());
 
-                    if (currentNumOfTools.get()==0) {
-                        //System.out.println(Thread.currentThread().getId() + " Finished to create: " + product.getName() + "+++++++++++++");
+                    if (currentNumOfTools.get() == 0) {
                         product.setFinalId(product.getStartId() + sumOfUsage.get());
                         complete(product);
-//                        System.out.println("number of defered waiting to - "+"screswdriver "+
-//                                warehouse.deferredScerawDriversWaitingResolve.size());
-//                        System.out.println("number of defered waiting to - "+"hammers "+
-//                                warehouse.deferredHammersWaitingResolve.size());
-//                        System.out.println("number of defered waiting to - "+"pliers "+
-//                                warehouse.deferredPliersWaitingResolve.size());
-//                        System.out.println("number of "+"gs-griver"+" = " +warehouse.amoutOfTool.get("gs-driver"));
-//                        System.out.println("number of "+"np-hammer"+" = " +warehouse.amoutOfTool.get("np-hammer"));
-//                        System.out.println("number of "+"rs-pliers"+" = " +warehouse.amoutOfTool.get("rs-pliers"));
-
                     }
                 };
 
                 deferredTool.whenResolved(useTool);
-
-                //Task<Deferred<Tool>> getTool = new UseTool(product, deferredTool);
-                // acquireToolsTasks.add(getTool);
             }
         }
-
-//        if (!acquireToolsTasks.isEmpty()) {
-//            spawn(acquireToolsTasks.toArray(new Task<?>[acquireToolsTasks.size()]));
-//            whenResolved(acquireToolsTasks, () -> {
-//                //allToolsAvailable = true;
-//                // TODO: 28/12/2016 check if continuing task
-//                System.out.println(Thread.currentThread().getId() + "is compleating: " + product.getName());
-//                complete(product);
-//            });
-//        }
-//        else{
-//            complete(product);
-//        }
     }
 
+    /**
+     * if the product doesn't need any parts - go to getTools
+     * otherwise, iterate on the product's list of parts and for every part
+     * create a CreateProduct Task and spawn those tasks.
+     * when the tasks ore done go to getTools.
+     */
     private void createSubParts() {
         if (plan.getParts().length == 0) {
             getTools();
         } else {
             List<Task<Product>> createSubPartsTasks = new ArrayList<>();
+
             for (Product subPart : product.getParts()) {
                 Task<Product> createSubPart = new CreateProduct(subPart, warehouse);
                 createSubPartsTasks.add(createSubPart);
@@ -132,44 +109,12 @@ public class CreateProduct extends Task<Product> {
 
             spawn(createSubPartsTasks.toArray(new Task<?>[createSubPartsTasks.size()]));
             whenResolved(createSubPartsTasks, () -> {
-                //allPartsAvailable = true;
-                //this.start();
                 getTools();
             });
         }
 
     }
 }
-
-//        String[] parts = plan.getParts();
-//        String[] tools = plan.getTools();
-//        Boolean haveTools = true;
-//        int numOfTools = tools.length;
-//        if (parts.length == 0) {
-//            for (String tool : tools) {
-//                Deferred<Tool> deferredTool = warehouse.acquireTool(tool);
-//                haveTools &= deferredTool.isResolved();
-//            }
-//
-//            if (haveTools) {
-//                for ()
-//                    Product finalProduct = complete(finalProduct);
-//            }
-//
-//        } else {
-//            List<Task<Product>> partsTasks = new ArrayList<>();
-//            for (String part : parts) {
-//                Task<Product> subProduct = new CreateProduct(part, warehouse, );
-//                partsTasks.add(subProduct);
-//
-//            }
-//            this.spawn(partsTasks.toArray(new Task<?>[partsTasks.size()]));
-//            //todo check if ? in task<> is ok
-//
-//            whenResolved(partsTasks, () -> {
-//
-//            });
-//        }
 
 
 
