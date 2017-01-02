@@ -2,6 +2,7 @@ package bgu.spl.a2;
 
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -77,7 +78,7 @@ public class WorkStealingThreadPool {
             if (Thread.currentThread().getId() == t.getId()) {
                 throw new UnsupportedOperationException();
             }
-            ProcessorsArr[id].isWorking.set(false);
+            ProcessorsArr[id].setIsWorking(false);
             t.interrupt();
             id++;
         }

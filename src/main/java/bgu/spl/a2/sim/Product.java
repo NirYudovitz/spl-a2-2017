@@ -12,7 +12,7 @@ public class Product implements java.io.Serializable {
     // represent the start id of product.
     private final long startId;
     // represent id after changes.
-    private AtomicLong currentId;
+    private AtomicLong finalId;
     private String name;
     private List<Product> partList;
     // represnt the order to print product in collection of product.
@@ -34,9 +34,10 @@ public class Product implements java.io.Serializable {
      */
     public Product(long startId, String name) {
         this.startId = startId;
-        this.currentId = new AtomicLong(0);
+        this.finalId = new AtomicLong(0);
         this.name = name;
         partList = new LinkedList<>();
+        //if product dow
         this.orderToPrint = -1;
     }
 
@@ -49,7 +50,7 @@ public class Product implements java.io.Serializable {
      */
     public Product(long startId, String name, int orderPrint) {
         this.startId = startId;
-        this.currentId = new AtomicLong(0);
+        this.finalId = new AtomicLong(0);
         this.name = name;
         partList = new LinkedList<>();
         this.orderToPrint = orderPrint;
@@ -74,7 +75,7 @@ public class Product implements java.io.Serializable {
      * final ID is the ID the product received as the sum of all UseOn();
      */
     public long getFinalId() {
-        return currentId.get();
+        return finalId.get();
     }
 
     /**
@@ -97,7 +98,7 @@ public class Product implements java.io.Serializable {
      * @param id is the final id to be set to this product.
      */
     public void setFinalId(long id) {
-        currentId.addAndGet(id);
+        finalId.addAndGet(id);
     }
 
     /**

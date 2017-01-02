@@ -13,8 +13,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * methods
  */
 public class Processor implements Runnable {
-    AtomicBoolean isWorking;
+    //represent if processor is working.
+    private AtomicBoolean isWorking;
     private final WorkStealingThreadPool pool;
+    // id of processor.
     private final int id;
 
     /**
@@ -86,5 +88,11 @@ public class Processor implements Runnable {
         pool.addOneTaskToProcessor(id, task);
     }
 
-
+    /**
+     * setting of isWorking.
+     * @param isWorking is the AtomicBoolean to set.
+     */
+    public void setIsWorking(boolean isWorking) {
+        this.isWorking.set(isWorking);
+    }
 }
