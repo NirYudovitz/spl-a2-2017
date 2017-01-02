@@ -7,17 +7,23 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * A class that represents a product produced during the simulation
  */
-public class Product implements java.io.Serializable{
+public class Product implements java.io.Serializable {
+    // represent the start id of product.
     private final long startId;
+    // represent id after changes.
     private AtomicLong currentId;
     private String name;
     private List<Product> partList;
+    // represnt the order to print product in collection of product.
+    private int orderToPrint;
 
+    /**
+     * @return the order to print the prosuct.
+     */
     public int getOrderToPrint() {
         return orderToPrint;
     }
 
-    private int orderToPrint;
 
     /**
      * Constructor
@@ -33,6 +39,13 @@ public class Product implements java.io.Serializable{
         this.orderToPrint = -1;
     }
 
+    /**
+     * Product C-tor.
+     *
+     * @param startId    - Product start id
+     * @param name       - Product name
+     * @param orderPrint - represnt the order to print product in collection of product.
+     */
     public Product(long startId, String name, int orderPrint) {
         this.startId = startId;
         this.currentId = new AtomicLong(0);
@@ -42,7 +55,7 @@ public class Product implements java.io.Serializable{
     }
 
     /**
-     * @return The product name as a string
+     * @return The product name as a string/
      */
     public String getName() {
         return name;
@@ -80,10 +93,16 @@ public class Product implements java.io.Serializable{
         // TODO: 26/12/2016 maybe sync?
     }
 
+    /**
+     * @param id is the final id to be set to this product.
+     */
     public void setFinalId(long id) {
         currentId.addAndGet(id);
     }
 
+    /**
+     * @return string represnting product and his parts.
+     */
     @Override
     public String toString() {
         String toString = "";
