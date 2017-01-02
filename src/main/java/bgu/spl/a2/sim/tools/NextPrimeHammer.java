@@ -5,11 +5,14 @@ import bgu.spl.a2.sim.Product;
 import java.math.BigInteger;
 
 /**
- * Created by Nir1612 on 26/12/2016.
+ * A class represents a tool of type NextPrimeHammer
  */
 public class NextPrimeHammer implements Tool {
     private String type;
 
+    /**
+     * NextPrimeHammer C-tor
+     */
     public NextPrimeHammer() {
         type = "np-hammer";
     }
@@ -38,6 +41,12 @@ public class NextPrimeHammer implements Tool {
         return value;
     }
 
+    /**
+     * calculate the next prime number bigger then the produc's Id
+     *
+     * @param id - The Product's id
+     * @return the value of the usage with the tool
+     */
     private long func(long id) {
 
         long v =id + 1;
@@ -47,6 +56,13 @@ public class NextPrimeHammer implements Tool {
 
         return v;
     }
+
+    /**
+     *
+     * @param value
+     * @return true if the recieved value is a prime number
+     *          false otherwise
+     */
     private boolean isPrime(long value) {
         if(value < 2) return false;
         if(value == 2) return true;
@@ -59,35 +75,4 @@ public class NextPrimeHammer implements Tool {
 
         return true;
     }
-
-
-//    public long useOn(Product p) {
-//        long sumOfUsage = 0;
-//        for(Product subPart : p.getParts()) {
-//            BigInteger partID = BigInteger.valueOf(subPart.getFinalId());
-//            sumOfUsage += Math.abs(getNextPrime(partID.longValue()));
-//        }
-//        return sumOfUsage;
-//    }
-//    private Long getNextPrime(Long id){
-//        long v =id + 1;
-//        while (!isPrime(v)) {
-//            v++;
-//        }
-//
-//        return v;
-//        }
-//
-//    private boolean isPrime(long value) {
-//        if(value < 2) return false;
-//        if(value == 2) return true;
-//        long sq = (long) Math.sqrt(value);
-//        for (long i = 2; i <= sq; i++) {
-//            if (value % i == 0) {
-//                return false;
-//            }
-//        }
-//
-//        return true;
-//    }
 }

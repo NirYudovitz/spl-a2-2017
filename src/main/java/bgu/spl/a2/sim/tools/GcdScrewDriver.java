@@ -5,10 +5,12 @@ import bgu.spl.a2.sim.Product;
 import java.math.BigInteger;
 
 /**
- * Created by Nir1612 on 26/12/2016.
+ * A class represents a tool of type GcdScrewDriver
  */
 public class GcdScrewDriver implements Tool {
-
+    /**
+     * GcdScrewDriver C-tor
+     */
     public GcdScrewDriver() {
         type = "gs-driver";
     }
@@ -38,12 +40,24 @@ public class GcdScrewDriver implements Tool {
         return value;
     }
 
+    /**
+     * calculate the gcd of the id with it's reverse
+     *
+     * @param id - The Product's id
+     * @return the value of the usage with the tool
+     */
     private long func(long id){
         BigInteger b1 = BigInteger.valueOf(id);
         BigInteger b2 = BigInteger.valueOf(reverse(id));
         long value= (b1.gcd(b2)).longValue();
         return value;
     }
+
+    /**
+     *
+     * @param n A long number represnts the Product Id
+     * @return the reversed Id
+     */
     private long reverse(long n){
         long reverse=0;
         while( n != 0 ){
@@ -53,15 +67,4 @@ public class GcdScrewDriver implements Tool {
         }
         return reverse;
     }
-
-//    public long useOn(Product p) {
-//        long sumOfUsage = 0;
-//        for (Product subPart : p.getParts()) {
-//            BigInteger subPartID = BigInteger.valueOf(subPart.getFinalId());
-//            long tempReverse = Long.reverse(subPart.getFinalId());
-//            BigInteger reverseProductID = BigInteger.valueOf(tempReverse);
-//            sumOfUsage += Math.abs(subPartID.gcd(reverseProductID).longValue());
-//        }
-//        return sumOfUsage;
-//    }
 }

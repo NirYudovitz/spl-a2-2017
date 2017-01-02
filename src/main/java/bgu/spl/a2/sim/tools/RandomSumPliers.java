@@ -5,11 +5,14 @@ import bgu.spl.a2.sim.Product;
 import java.util.Random;
 
 /**
- * Created by Nir1612 on 26/12/2016.
+ * A class represents a tool of type RandomSumPliers
  */
 public class RandomSumPliers implements Tool {
     private String type;
 
+    /**
+     * RandomSumPliers C-tor
+     */
     public RandomSumPliers() {
         type = "rs-pliers";
     }
@@ -36,7 +39,12 @@ public class RandomSumPliers implements Tool {
         }
         return value;
     }
-
+    /**
+     * Sums up id % 10,000 random numbers
+     *
+     * @param id - The Product's id
+     * @return the value of the usage with the tool
+     */
     private long func(long id){
         Random r = new Random(id);
         long  sum = 0;
@@ -46,17 +54,4 @@ public class RandomSumPliers implements Tool {
 
         return sum;
     }
-
-
-
-//    public long useOn(Product p) {
-//        long sumOfUsage = 0;
-//        for (Product subPart : p.getParts()) {
-//            long sumOfProducts = (subPart.getFinalId()) % 10000;
-//            Random rnd = new Random(subPart.getFinalId());
-//            for (long i = 0; i < sumOfProducts; i++)
-//                sumOfUsage += Math.abs(rnd.nextInt());
-//        }
-//        return sumOfUsage;
-//    }
 }
