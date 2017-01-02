@@ -96,10 +96,10 @@ public class Warehouse {
     }
 
     /**
-     * Store a qty Amount of tools of type tool in the warehouse for later retrieval
+     * Store a qty Amount of tools of type tool in the warehouse for later retrieval.
      *
-     * @param tool - type of tool to be stored
-     * @param qty  - amount of tools of type tool to be stored
+     * @param tool - type of tool to be stored.
+     * @param qty  - amount of tools of type tool to be stored.
      */
     public void addTool(Tool tool, int qty) {
         amoutOfTool.get(tool.getType()).getAndAdd(qty);
